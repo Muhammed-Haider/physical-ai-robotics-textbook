@@ -26,11 +26,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Weeks 11-12: Humanoid Robot Development',
-      items: [], // Placeholder for future chapters
-      link: {
-        type: 'generated-index',
-        title: 'Humanoid Robot Development Overview',
-      },
+      items: ['week-11/humanoid-design-actuation'], // Our newly created chapter
     },
     {
       type: 'category',
