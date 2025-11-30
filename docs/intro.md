@@ -2,46 +2,34 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Welcome to the Physical AI & Humanoid Robotics Textbook
 
-Let's discover **Docusaurus in less than 5 minutes**.
+## Bridging Digital Intelligence with Physical Embodiment
 
-## Getting Started
+This AI-native textbook is your comprehensive guide to the exciting and rapidly evolving fields of Physical AI and Humanoid Robotics. Designed for learners aged 15-100, this resource goes beyond theoretical concepts, diving deep into how artificial intelligence is brought to life within the physical world.
 
-Get started by **creating a new site**.
+## Our Unique Approach
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+At the heart of this textbook is a commitment to pedagogical excellence, beautiful design, and cutting-edge technology. We believe learning should be:
 
-### What you'll need
+*   **AI-Native**: Built from the ground up with AI assistance for content generation, validation, and interactive learning.
+*   **Pedagogically Sound**: Crafted using principles from leading educational theorists (Piaget, Vygotsky, Papert, Dewey, etc.) to ensure effective and engaging learning.
+*   **Design-Driven**: Expect Apple-level design quality and Vercel-level typographic sophistication for an unparalleled reading experience.
+*   **Practical & Hands-On**: Emphasizing learning through doing, with interactive simulations, coding exercises, and real-world case studies.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## What You Will Learn
 
-## Generate a new site
+Over 13 weeks, you will embark on a journey from the foundations of Physical AI to the intricacies of humanoid robot development and conversational robotics. Topics include:
 
-Generate a new Docusaurus site using the **classic template**.
+*   Physical AI Foundations
+*   ROS 2 Fundamentals
+*   Gazebo & Unity Simulation
+*   NVIDIA Isaac Platform
+*   Humanoid Robot Development
+*   Conversational Robotics
 
-The classic template will automatically be added to your project after you run the command:
+Our goal is to equip you with the knowledge, skills, and confidence to design, simulate, and deploy humanoid robots that interact naturally in physical environments.
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+## Get Started
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Begin your learning journey by exploring the chapters in the sidebar. Each week's content is designed to build upon the last, providing a scaffolded path to mastering Physical AI and Humanoid Robotics.
