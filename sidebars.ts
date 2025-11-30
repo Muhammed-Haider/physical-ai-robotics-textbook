@@ -21,11 +21,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Weeks 8-10: NVIDIA Isaac Platform',
-      items: [], // Placeholder for future chapters
-      link: {
-        type: 'generated-index',
-        title: 'NVIDIA Isaac Platform Overview',
-      },
+      items: ['week-8/isaac-platform-intro'], // Our newly created chapter
     },
     {
       type: 'category',
