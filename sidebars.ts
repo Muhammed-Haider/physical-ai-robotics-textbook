@@ -31,11 +31,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Week 13: Conversational Robotics',
-      items: [], // Placeholder for future chapters
-      link: {
-        type: 'generated-index',
-        title: 'Conversational Robotics Overview',
-      },
+      items: ['week-13/conversational-robotics-nlp'], // Our newly created chapter
     },
   ],
 };
