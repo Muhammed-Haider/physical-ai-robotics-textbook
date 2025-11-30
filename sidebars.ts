@@ -12,26 +12,46 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Weeks 3-5: ROS 2 Fundamentals',
       items: [], // Placeholder for future chapters
+      link: {
+        type: 'generated-index',
+        title: 'ROS 2 Fundamentals Overview',
+      },
     },
     {
       type: 'category',
       label: 'Weeks 6-7: Gazebo & Unity Simulation',
       items: [], // Placeholder for future chapters
+      link: {
+        type: 'generated-index',
+        title: 'Gazebo & Unity Simulation Overview',
+      },
     },
     {
       type: 'category',
       label: 'Weeks 8-10: NVIDIA Isaac Platform',
       items: [], // Placeholder for future chapters
+      link: {
+        type: 'generated-index',
+        title: 'NVIDIA Isaac Platform Overview',
+      },
     },
     {
       type: 'category',
       label: 'Weeks 11-12: Humanoid Robot Development',
       items: [], // Placeholder for future chapters
+      link: {
+        type: 'generated-index',
+        title: 'Humanoid Robot Development Overview',
+      },
     },
     {
       type: 'category',
       label: 'Week 13: Conversational Robotics',
       items: [], // Placeholder for future chapters
+      link: {
+        type: 'generated-index',
+        title: 'Conversational Robotics Overview',
+      },
     },
   ],
 };
