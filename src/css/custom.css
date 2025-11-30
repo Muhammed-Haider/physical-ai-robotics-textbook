@@ -1,3 +1,166 @@
+/* === Colors === */
+:root {
+  --primary: #007aff;
+  --primary-light: #3399ff;
+  --primary-dark: #005bb5;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #a0a0a0;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333333;
+  --border: #2a2a2a;
+  --border-light: #3a3a3a;
+  
+  /* Spacing Scale (8px base) */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+  
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 400ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Accent Colors for Admonitions */
+  --accent-green: #34C759;
+  --accent-yellow: #FFCC00;
+  --accent-red: #FF3B30;
+}
+
+/* === Typography === */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+               'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75; /* Slightly increased to ensure compliance */
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+               'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+h1 { font-size: 3rem; font-weight: 700; }
+h2 { font-size: 2.25rem; font-weight: 600; }
+h3 { font-size: 1.75rem; font-weight: 600; }
+h4 { font-size: 1.375rem; font-weight: 500; }
+
+p {
+  margin-bottom: var(--space-md);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast) ease-out;
+}
+
+a:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}
+
+/* === Components === */
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--ease-out-expo);
+}
+
+.button-primary {
+  background: var(--primary);
+  color: var(--text-primary);
+  border: none;
+}
+
+.button-primary:hover {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Cards */
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--transition-normal) var(--ease-out-expo);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-light);
+}
+
+/* Code Blocks */
+pre {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) !important;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+code {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', 
+               Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+  background: var(--bg-tertiary);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+}
+
+/* Callouts/Admonitions */
+.admonition {
+  border-left: 4px solid var(--primary);
+  background-color: var(--bg-secondary);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin: var(--space-xl) 0;
+  color: var(--text-secondary);
+}
+
+.admonition strong {
+  color: var(--text-primary);
+}
 
 /* === Tables === */
 table {
@@ -34,4 +197,39 @@ tbody tr:nth-child(even) {
 table {
   border-radius: var(--radius-md);
   overflow: hidden; /* Ensures rounded corners apply to content */
+}
+
+/* === Content Layout for Readability === */
+.markdown p, .markdown ul, .markdown ol, .markdown blockquote, .markdown table {
+  max-width: 650px; /* Approx 60-75 chars for 18px font-size */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Adjust line-height for body to ensure >= 1.7 */
+body {
+  line-height: 1.75; /* Slightly increased to ensure compliance */
+}
+
+/* Specific Admonition Styles for Vercel Aesthetic */
+.theme-doc-markdown a.admonition { /* Target only admonition links */
+  color: var(--text-primary); /* Ensure link text in admonition is readable */
+  text-decoration: none;
+}
+.admonition.admonition-info {
+  border-left-color: var(--primary); /* Blue */
+  background-color: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+.admonition.admonition-tip { /* For success/tip, use green */
+  border-left-color: var(--accent-green);
+  background-color: color-mix(in srgb, var(--accent-green) 5%, transparent);
+}
+.admonition.admonition-warning, .admonition.admonition-danger { /* For warning/danger, use yellow/red */
+  border-left-color: var(--accent-yellow);
+  background-color: color-mix(in srgb, var(--accent-yellow) 5%, transparent);
+}
+/* For critical error messages, use red */
+.admonition.admonition-danger {
+  border-left-color: var(--accent-red);
+  background-color: color-mix(in srgb, var(--accent-red) 5%, transparent);
 }
