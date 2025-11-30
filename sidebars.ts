@@ -21,7 +21,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Weeks 8-10: NVIDIA Isaac Platform',
-      items: ['week-8/isaac-platform-intro', 'week-9/isaac-ros2-advanced'], // Our newly created chapter
+      items: ['week-8/isaac-platform-intro', 'week-9/isaac-ros2-advanced', 'week-10/isaac-multi-robot-ai-training'], // Our newly created chapter
     },
     {
       type: 'category',
