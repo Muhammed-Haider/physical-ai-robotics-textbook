@@ -6,7 +6,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Week 1-2: Physical AI Foundations',
-      items: ['week-1/physical-ai-foundations'], // Our newly created chapter
+      items: ['week-1/physical-ai-foundations', 'week-2/physical-ai-foundational-concepts'], // Our newly created chapter
     },
     {
       type: 'category',
