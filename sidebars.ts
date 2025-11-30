@@ -16,11 +16,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Weeks 6-7: Gazebo & Unity Simulation',
-      items: [], // Placeholder for future chapters
-      link: {
-        type: 'generated-index',
-        title: 'Gazebo & Unity Simulation Overview',
-      },
+      items: ['week-6/gazebo-intro-setup'], // Our newly created chapter
     },
     {
       type: 'category',
