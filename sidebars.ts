@@ -11,7 +11,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Weeks 3-5: ROS 2 Fundamentals',
-      items: ['week-3/ros2-fundamentals-intro'], // Our newly created chapter
+      items: ['week-3/ros2-fundamentals-intro', 'week-4/ros2-communication-patterns'], // Our newly created chapter
     },
     {
       type: 'category',
