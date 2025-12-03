@@ -67,11 +67,11 @@ Even without a physical robot, we can simulate embodied AI. For this lab, you'll
 
 **Steps**:
 1.  **Install the library**:
-    ```bash
+    ```bash title='install.sh'
     pip install pybullet
     ```
 2.  **Create a simple simulation script (e.g., `first_sim.py`)**:
-    ```python
+    ```python title='first_sim.py' showLineNumbers
     import pybullet as p
     import pybullet_data
     import time
@@ -93,7 +93,7 @@ Even without a physical robot, we can simulate embodied AI. For this lab, you'll
     p.disconnect()
     ```
 3.  **Run the script**:
-    ```bash
+    ```bash title='run_simulation.sh'
     python first_sim.py
     ```
 
