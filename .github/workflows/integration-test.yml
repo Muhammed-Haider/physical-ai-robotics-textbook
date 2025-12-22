@@ -1,0 +1,192 @@
+name: "Integration Test for Validation Workflow"
+
+on: workflow_dispatch
+
+jobs:
+  integration_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for accurate diffing
+
+      - name: Setup Git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create test branch
+        id: create-branch
+        run: |
+          BRANCH_NAME="test-validation-${GITHUB_RUN_ID}"
+          git checkout -b $BRANCH_NAME
+          echo "TEST_BRANCH=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Add/Modify files for passing scenario
+        id: passing-scenario
+        run: |
+          echo "This is a new passing file." > new-passing-file.md
+          echo "Updated content." >> docs/intro.md
+          git add new-passing-file.md docs/intro.md
+          git commit -m "feat: Add new passing file for integration test"
+          git push origin ${{ steps.create-branch.outputs.TEST_BRANCH }}
+
+      - name: Open Pull Request (Passing Scenario)
+        id: open-pr-passing
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pull } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Integration Test PR (Passing)',
+              head: '${{ steps.create-branch.outputs.TEST_BRANCH }}',
+              base: context.repo.default_branch,
+              body: 'This PR is for integration testing the validation workflow (passing scenario).'
+            });
+            console.log(`Created PR: ${pull.html_url}`);
+            core.setOutput('pull_number', pull.number);
+            core.setOutput('pull_url', pull.html_url);
+
+      - name: Wait for Validation Workflow to complete (Passing Scenario)
+        uses: actions/wait-on-check@v0.8.0
+        with:
+          check-name: "Automated Validation Workflow"
+          ref: ${{ steps.create-branch.outputs.TEST_BRANCH }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10 # seconds
+          timeout: 300 # seconds
+
+      - name: Verify PR comment and labels (Passing Scenario)
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pullNumber = ${{ steps.open-pr-passing.outputs.pull_number }};
+            const comments = await github.rest.issues.listComments({
+              issue_number: pullNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const validationComment = comments.data.find(comment => comment.body.includes('Automated Validation Results'));
+            if (!validationComment || !validationComment.body.includes('✅ PASSED')) {
+              core.setFailed('Validation comment not found or did not indicate PASSED status.');
+            } else {
+              console.log('Passing scenario: Validation comment verified successfully.');
+            }
+
+            const labels = await github.rest.issues.listLabelsOnIssue({
+              issue_number: pullNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const needsImprovementLabel = labels.data.find(label => label.name === 'needs-improvement');
+            if (needsImprovementLabel) {
+              core.setFailed('Passing scenario: "needs-improvement" label found.');
+            } else {
+              console.log('Passing scenario: "needs-improvement" label not found, as expected.');
+            }
+
+      - name: Add/Modify files for failing scenario
+        id: failing-scenario
+        run: |
+          echo "This is a new failing file." > new-fail-file.fail
+          git add new-fail-file.fail
+          git commit -m "feat: Add new failing file for integration test"
+          git push origin ${{ steps.create-branch.outputs.TEST_BRANCH }}
+
+      - name: Open Pull Request (Failing Scenario)
+        id: open-pr-failing
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pull } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Integration Test PR (Failing)',
+              head: '${{ steps.create-branch.outputs.TEST_BRANCH }}',
+              base: context.repo.default_branch,
+              body: 'This PR is for integration testing the validation workflow (failing scenario).'
+            });
+            console.log(`Created PR: ${pull.html_url}`);
+            core.setOutput('pull_number', pull.number);
+            core.setOutput('pull_url', pull.html_url);
+
+      - name: Wait for Validation Workflow to complete (Failing Scenario)
+        uses: actions/wait-on-check@v0.8.0
+        with:
+          check-name: "Automated Validation Workflow"
+          ref: ${{ steps.create-branch.outputs.TEST_BRANCH }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10 # seconds
+          timeout: 300 # seconds
+
+      - name: Verify PR comment and labels (Failing Scenario)
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pullNumber = ${{ steps.open-pr-failing.outputs.pull_number }};
+            const comments = await github.rest.issues.listComments({
+              issue_number: pullNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const validationComment = comments.data.find(comment => comment.body.includes('Automated Validation Results'));
+            if (!validationComment || !validationComment.body.includes('❌ FAILED')) {
+              core.setFailed('Failing scenario: Validation comment not found or did not indicate FAILED status.');
+            } else {
+              console.log('Failing scenario: Validation comment verified successfully.');
+            }
+
+            const labels = await github.rest.issues.listLabelsOnIssue({
+              issue_number: pullNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const needsImprovementLabel = labels.data.find(label => label.name === 'needs-improvement');
+            if (!needsImprovementLabel) {
+              core.setFailed('Failing scenario: "needs-improvement" label not found.');
+            } else {
+              console.log('Failing scenario: "needs-improvement" label found, as expected.');
+            }
+
+      - name: Clean up test branch
+        if: always() # Always run cleanup
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = '${{ steps.create-branch.outputs.TEST_BRANCH }}';
+            try {
+              // Close the PRs created during the test
+              const prs = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                head: branchName
+              });
+
+              for (const pr of prs.data) {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  state: 'closed'
+                });
+                console.log(`Closed PR #${pr.number}`);
+              }
+
+              // Delete the test branch
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `heads/${branchName}`
+              });
+              console.log(`Deleted branch: ${branchName}`);
+            } catch (error) {
+              console.error(`Error during cleanup: ${error.message}`);
+            }

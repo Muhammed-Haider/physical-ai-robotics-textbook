@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Chapter",
+  "description": "A manuscript file containing the textbook content for a specific topic.",
+  "type": "object",
+  "properties": {
+    "file_path": {
+      "type": "string",
+      "description": "The path to the chapter's markdown file"
+    },
+    "content": {
+      "type": "string",
+      "description": "The full markdown content of the chapter"
+    },
+    "week_number": {
+      "type": "integer",
+      "description": "The week number the chapter belongs to"
+    },
+    "topic_slug": {
+      "type": "string",
+      "description": "A URL-friendly slug for the chapter topic"
+    }
+  },
+  "required": [
+    "file_path",
+    "content",
+    "week_number",
+    "topic_slug"
+  ]
+}

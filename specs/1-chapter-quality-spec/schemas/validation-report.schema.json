@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Validation Report",
+  "description": "A structured document detailing the pass/fail status of a chapter against each of the 8 functional requirements.",
+  "type": "object",
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "A unique identifier for the report"
+    },
+    "chapter_file_path": {
+      "type": "string",
+      "description": "The path to the chapter that was validated"
+    },
+    "validation_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the validation was run"
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL"],
+      "description": "The overall pass/fail status of the validation"
+    },
+    "agent_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "agent_name": {
+            "type": "string",
+            "description": "The name of the pedagogical agent"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PASS", "FAIL"]
+          },
+          "score": {
+            "type": "number"
+          },
+          "feedback": {
+            "type": "string"
+          },
+          "requirement_violated": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent_name",
+          "status",
+          "score",
+          "feedback",
+          "requirement_violated"
+        ]
+      }
+    }
+  },
+  "required": [
+    "report_id",
+    "chapter_file_path",
+    "validation_timestamp",
+    "overall_status",
+    "agent_results"
+  ]
+}

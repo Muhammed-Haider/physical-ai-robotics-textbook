@@ -1,0 +1,64 @@
+{
+  "report_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+  "chapter_file_path": "specs/1-chapter-quality-spec/samples/sample-chapter-invalid.md",
+  "validation_timestamp": "2025-12-22T20:00:00Z",
+  "overall_status": "FAIL",
+  "agent_results": [
+    {
+      "agent_name": "Developmental Staging Agent",
+      "status": "PASS",
+      "score": 8.0,
+      "feedback": "The chapter introduces concepts in a logical order.",
+      "requirement_violated": "None"
+    },
+    {
+      "agent_name": "Constructivist Activity Agent",
+      "status": "FAIL",
+      "score": 2.0,
+      "feedback": "The chapter is purely theoretical and does not contain any hands-on labs or coding exercises.",
+      "requirement_violated": "FR-002"
+    },
+    {
+      "agent_name": "Motivational Immersion Agent",
+      "status": "PASS",
+      "score": 7.0,
+      "feedback": "The chapter content is presented clearly.",
+      "requirement_violated": "None"
+    },
+    {
+      "agent_name": "Creative Synthesis Agent",
+      "status": "PASS",
+      "score": 7.5,
+      "feedback": "The chapter introduces complex topics that can lead to creative thought.",
+      "requirement_violated": "None"
+    },
+    {
+      "agent_name": "Modular Mind Agent",
+      "status": "FAIL",
+      "score": 1.0,
+      "feedback": "The chapter lacks visual aids, diagrams, or mental models to help break down complex topics.",
+      "requirement_violated": "FR-005"
+    },
+    {
+      "agent_name": "Contextual Humanity Agent",
+      "status": "PASS",
+      "score": 9.0,
+      "feedback": "The chapter briefly mentions the history of GANs.",
+      "requirement_violated": "None"
+    },
+    {
+      "agent_name": "Technology Critique Agent",
+      "status": "PASS",
+      "score": 7.0,
+      "feedback": "The technologies discussed are relevant to the field.",
+      "requirement_violated": "None"
+    },
+    {
+      "agent_name": "Reflective Assessment Agent",
+      "status": "FAIL",
+      "score": 0.0,
+      "feedback": "The chapter does not include any self-check questions or reflection prompts.",
+      "requirement_violated": "FR-008"
+    }
+  ]
+}
