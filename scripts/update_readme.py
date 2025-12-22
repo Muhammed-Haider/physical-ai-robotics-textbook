@@ -71,8 +71,8 @@ def update_readme(repo_owner, repo_name):
 if __name__ == "__main__":
     # Extract from environment variables or use a default
     # In a GitHub Action, these would be pre-filled
-    REPO_OWNER = os.getenv("GITHUB_REPOSITORY_OWNER", "Panaversity")
-    REPO_NAME = os.getenv("GITHUB_REPOSITORY_NAME", "ai-book")
+    REPO_OWNER = os.getenv("GITHUB_REPOSITORY_OWNER", "Muhammed-Haider")
+    REPO_NAME = os.getenv("GITHUB_REPOSITORY_NAME", "physical-ai-robotics-textbook")
     
     # A bit of logic to handle the full GITHUB_REPOSITORY variable if it exists
     repo_var = os.getenv("GITHUB_REPOSITORY")
