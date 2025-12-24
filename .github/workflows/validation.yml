@@ -1,10 +1,17 @@
-name: "Automated Validation Workflow"
+name: Automated Validation Workflow
 
-on: [pull_request]
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,44 +24,63 @@ jobs:
         run: chmod +x .specify/scripts/validation/run-validation.sh
 
       - name: Run validation script
-        id: run-validation # Added ID to the step
-        run: .specify/scripts/validation/run-validation.sh ${{ steps.changed-files.outputs.all_changed_files }}
+        id: run-validation
+        continue-on-error: true
+        run: |
+          .specify/scripts/validation/run-validation.sh \
+          "${{ steps.changed-files.outputs.all_changed_files }}"
 
       - name: Process validation results
         id: process-results
         run: |
-          VALIDATION_SUMMARY=$(cat validation_summary.txt)
+          if [ -f validation_summary.txt ]; then
+            SUMMARY=$(cat validation_summary.txt)
+          else
+            SUMMARY="No validation summary generated."
+          fi
+
           echo "validation_output<<EOF" >> $GITHUB_OUTPUT
-          echo "$VALIDATION_SUMMARY" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
           echo "validation_status=${{ steps.run-validation.outcome }}" >> $GITHUB_OUTPUT
 
       - name: Post validation results as PR comment
         uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const validationOutput = `${{ steps.process-results.outputs.validation_output }}`;
-            const validationStatus = `${{ steps.process-results.outputs.validation_status }}`;
-            let commentBody = `### Automated Validation Results\n\n`;
-            commentBody += `**Overall Status**: ${validationStatus === 'success' ? '✅ PASSED' : '❌ FAILED'}\n\n`;
-            commentBody += `<details><summary>Validation Summary</summary>\n\n\`\`\`\n${validationOutput}\n\`\`\`\n</details>`;
-            
-            github.rest.issues.createComment({
+            const output = `${{ steps.process-results.outputs.validation_output }}`;
+            const status = `${{ steps.process-results.outputs.validation_status }}`;
+
+            const body = `
+            ### Automated Validation Results
+
+            **Overall Status:** ${status === 'success' ? '✅ PASSED' : '❌ FAILED'}
+
+            <details>
+            <summary>Validation Summary</summary>
+
+            \`\`\`
+            ${output}
+            \`\`\`
+            </details>
+            `;
+
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: commentBody
+              body
             });
 
-      - name: Apply validation status label
+      - name: Apply validation failure label
+        if: steps.process-results.outputs.validation_status == 'failure'
         uses: actions/github-script@v6
-        if: github.event_name == 'pull_request' && steps.process-results.outputs.validation_status == 'failure'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.addLabels({
+            await github.rest.issues.addLabels({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
