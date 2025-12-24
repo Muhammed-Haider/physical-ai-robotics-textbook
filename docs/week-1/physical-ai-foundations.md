@@ -104,6 +104,57 @@ Even without a physical robot, we can simulate embodied AI. For this lab, you'll
 
 **Design Task**: Modify `first_sim.py`. Can you make the R2D2 robot fall over? Or apply a force to make it move? Think about how real robots react to external stimuli. (Hint: look into `p.applyExternalForce` or changing initial position/orientation).
 
+### Exercise 2: Basic Actuation by Applying Force :::info FR-003: Motivational Immersion
+:::
+
+**Challenge Level**: Beginner
+
+**Objective**: Apply a continuous force to a simulated robot to induce movement, demonstrating basic actuation.
+
+**Tools**: Python, `pybullet`. :::info FR-007: Technology Critique - `pybullet` allows direct control over physics, crucial for understanding forces in embodied AI.
+:::
+
+**Steps**:
+1.  **Copy `first_sim.py`**: Duplicate `first_sim.py` and name the new file `exercise2_actuation.py`.
+2.  **Add force application**: Open `exercise2_actuation.py` and add the following line *inside* the `for i in range(1000):` loop, after `p.stepSimulation()`:
+    ```python
+    p.applyExternalForce(robotId, -1, [50, 0, 0], [0, 0, 0.1], p.WORLD_FRAME)
+    ```
+    This applies a 50N force along the X-axis to the robot's base.
+3.  **Run the script**:
+    ```bash
+    python exercise2_actuation.py
+    ```
+
+**Expected Output**: A window will open showing R2D2. It will begin to slide and tumble across the plane due to the continuous force, illustrating how programmatic commands translate to physical motion.
+
+### Exercise 3: Simple Sensing by Reading State :::info FR-003: Motivational Immersion
+:::
+
+**Challenge Level**: Beginner
+
+**Objective**: Query and print the position and orientation of the robot in `pybullet`, demonstrating basic proprioceptive sensing.
+
+**Tools**: Python, `pybullet`. :::info FR-007: Technology Critique - Understanding `pybullet`'s state query functions is key for developing perception.
+:::
+
+**Steps**:
+1.  **Create a new script**: Create a new Python file named `exercise3_sensing.py`.
+2.  **Setup simulation**: Copy the basic simulation setup (imports, `p.connect`, `p.setAdditionalSearchPath`, `p.setGravity`, `p.loadURDF` for plane and R2D2) from `first_sim.py` into `exercise3_sensing.py`.
+3.  **Read and print state**: Inside the `for i in range(1000):` loop, add the following lines *after* `p.stepSimulation()`:
+    ```python
+    pos, ori = p.getBasePositionAndOrientation(robotId)
+    # Convert quaternion to Euler angles for easier understanding
+    euler = p.getEulerFromQuaternion(ori)
+    print(f"Position: X={pos[0]:.2f}, Y={pos[1]:.2f}, Z={pos[2]:.2f} | Orientation: R={euler[0]:.2f}, P={euler[1]:.2f}, Y={euler[2]:.2f}")
+    ```
+4.  **Run the script**:
+    ```bash
+    python exercise3_sensing.py
+    ```
+
+**Expected Output**: The simulation window will show R2D2 standing still. In the console, continuous updates of the robot's X, Y, Z position and Roll, Pitch, Yaw orientation will be printed, demonstrating real-time state sensing.
+
 ## Real-World Application: Warehouse Robotics :::info FR-006: Contextual Humanity
 :::
 
