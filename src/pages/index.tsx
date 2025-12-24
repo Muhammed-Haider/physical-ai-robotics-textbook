@@ -20,8 +20,8 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            to="/docs/week-1/physical-ai-foundations">
+            Start Learning - Week 1 🚀
           </Link>
         </div>
       </div>
@@ -29,13 +29,36 @@ function HomepageHeader() {
   );
 }
 
+function HomepageIntroSection(): ReactNode {
+  return (
+    <section className={clsx('padding-vert--xl', styles.homepageIntro)}>
+      <div className="container text--center">
+        <div className="row">
+          <div className="col col--8 col--offset-2">
+            <Heading as="h2" className={styles.homepageIntroTitle}>
+              Your Journey into Physical AI & Humanoid Robotics Begins Here
+            </Heading>
+            <p className="hero__subtitle">
+              This AI-native textbook is designed to be a world-class digital learning experience,
+              bridging the gap between digital intelligence and physical embodiment. Explore
+              pedagogically sound content, interactive exercises, and real-world applications
+              to master the exciting field of Physical AI.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`Welcome to ${siteConfig.title}`}
+      description="An AI-native digital textbook on Physical AI & Humanoid Robotics, covering ROS 2, Gazebo, NVIDIA Isaac, and advanced humanoid development with interactive exercises and personalized learning.">
       <HomepageHeader />
+      <HomepageIntroSection />
       <main>
         <HomepageFeatures />
       </main>

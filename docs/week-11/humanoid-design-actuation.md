@@ -121,6 +121,109 @@ Controlling a humanoid robot's end-effectors (hands, feet) to reach a desired po
 
 **Expected Output**: RViz2 will open, showing your bipedal robot model. A GUI slider window will allow you to manipulate the robot's joint angles and see the model move in RViz2, demonstrating forward kinematics.
 
+### Exercise 2: Adding a Gazebo Simulation for the Humanoid
+
+**Challenge Level**: Intermediate
+
+**Objective**: Extend your bipedal robot URDF to be compatible with Gazebo and spawn it in a simulated environment.
+
+**Tools**: ROS 2 development environment, Gazebo.
+
+**Steps**:
+1.  **Modify your URDF** to include `<gazebo>` tags for each link and joint, specifying inertia, collision properties, and material.
+    ```xml
+    <!-- Example for a link -->
+    <link name="base_link">
+      <visual>...</visual>
+      <collision>...</collision>
+      <inertial>...</inertial>
+    </link>
+
+    <!-- Example for a joint with transmission -->
+    <joint name="some_joint" type="revolute">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <transmission name="some_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="some_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="some_joint_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    ```
+2.  **Ensure you have `ros_gz_sim` (or `gazebo_ros`) installed** and configured for your ROS 2 version.
+3.  **Create a launch file** to spawn your robot in Gazebo:
+    ```python
+    import os
+    from ament_index_python.packages import get_package_share_directory
+    from launch import LaunchDescription
+    from launch_ros.actions import Node
+    from launch.actions import IncludeLaunchDescription
+    from launch.launch_description_sources import PythonLaunchDescriptionSource
+
+    def generate_launch_description():
+        pkg_share_dir = get_package_share_directory('my_humanoid_description')
+        urdf_path = os.path.join(pkg_share_dir, 'urdf', 'my_humanoid.urdf')
+
+        # Launch Gazebo
+        gazebo_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([os.path.join(
+                get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
+            launch_arguments={'gz_args': '-r empty.sdf'}.items()
+        )
+
+        # Spawn robot
+        spawn_entity = Node(
+            package='ros_gz_sim',
+            executable='create',
+            arguments=['-name', 'my_humanoid', '-topic', 'robot_description', '-x', '0', '-y', '0', '-z', '1'],
+            output='screen'
+        )
+
+        # Robot State Publisher
+        robot_state_publisher_node = Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            parameters=[{'robot_description': open(urdf_path).read(), 'use_sim_time': True}],
+            output='screen'
+        )
+
+        return LaunchDescription([
+            gazebo_launch,
+            robot_state_publisher_node,
+            spawn_entity
+        ])
+    ```
+4.  **Build and source your workspace**.
+5.  **Launch the simulation**: `ros2 launch my_humanoid_description spawn_humanoid.launch.py`
+
+**Expected Output**: Gazebo will open with your humanoid robot model spawned and interacting with physics.
+
+### Exercise 3: Implementing a Simple Joint Controller
+
+**Challenge Level**: Intermediate
+
+**Objective**: Use `ros2_control` to command the joint positions of your simulated humanoid robot.
+
+**Tools**: ROS 2, Gazebo, `ros2_control`.
+
+**Steps**:
+1.  **Set up `ros2_control`** in your humanoid URDF and package. This involves adding `<ros2_control>` tags to your URDF, defining controllers, and creating a controller configuration file (e.g., `controllers.yaml`).
+2.  **Launch the Gazebo simulation** with your humanoid robot and the `ros2_control` nodes.
+3.  **Load and start a joint_trajectory_controller**:
+    ```bash
+    ros2 control load_controller joint_trajectory_controller --set-state active
+    ```
+4.  **Publish joint commands**: Use the `ros2 topic pub` command to send a `JointTrajectory` message to the controller, commanding the robot's joints to move to specific positions.
+    ```bash
+    ros2 topic pub /joint_trajectory_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory '{joint_names: ["left_hip_pitch_joint"], points: [{positions: [0.5], time_from_start: {sec: 1, nanosec: 0}}]}'
+    ```
+
+**Expected Output**: Your simulated humanoid robot in Gazebo will move its commanded joints according to the published trajectory.
+
 ## Creative Challenge: Simple Bipedal Balance (FR-004: Creative Synthesis)
 
 **Design Task**: Research the concept of the "Zero Moment Point (ZMP)". Outline a conceptual algorithm or control strategy that a simple bipedal robot could use to shift its weight and maintain balance while standing still, without falling over. What sensors would be crucial for this?

@@ -5,33 +5,68 @@ const sidebars: SidebarsConfig = {
     'intro', // General Introduction
     {
       type: 'category',
-      label: 'Week 1-2: Physical AI Foundations',
-      items: ['week-1/physical-ai-foundations', 'week-2/physical-ai-foundational-concepts'], // Our newly created chapter
+      label: 'Week 1: Physical AI Foundations',
+      items: ['week-1/physical-ai-foundations'],
     },
     {
       type: 'category',
-      label: 'Weeks 3-5: ROS 2 Fundamentals',
-      items: ['week-3/ros2-fundamentals-intro', 'week-4/ros2-communication-patterns', 'week-5/ros2-parameters-launch-cli'], // Our newly created chapter
+      label: 'Week 2: Physical AI Foundations Cont.',
+      items: ['week-2/physical-ai-foundational-concepts'],
     },
     {
       type: 'category',
-      label: 'Weeks 6-7: Gazebo & Unity Simulation',
-      items: ['week-6/gazebo-intro-setup', 'week-7/gazebo-unity-advanced'], // Our newly created chapter
+      label: 'Week 3: ROS 2 Fundamentals',
+      items: ['week-3/ros2-fundamentals-intro'],
     },
     {
       type: 'category',
-      label: 'Weeks 8-10: NVIDIA Isaac Platform',
-      items: ['week-8/isaac-platform-intro', 'week-9/isaac-ros2-advanced', 'week-10/isaac-multi-robot-ai-training'], // Our newly created chapter
+      label: 'Week 4: ROS 2 Communication Patterns',
+      items: ['week-4/ros2-communication-patterns'],
     },
     {
       type: 'category',
-      label: 'Weeks 11-12: Humanoid Robot Development',
-      items: ['week-11/humanoid-design-actuation', 'week-12/humanoid-perception-control-interaction'], // Our newly created chapter
+      label: 'Week 5: ROS 2 Parameters, Launch, CLI',
+      items: ['week-5/ros2-parameters-launch-cli'],
     },
     {
       type: 'category',
-      label: 'Week 13: Conversational Robotics',
-      items: ['week-13/conversational-robotics-nlp'], // Our newly created chapter
+      label: 'Week 6: Gazebo Introduction & Setup',
+      items: ['week-6/gazebo-intro-setup'],
+    },
+    {
+      type: 'category',
+      label: 'Week 7: Gazebo & Unity Advanced',
+      items: ['week-7/gazebo-unity-advanced'],
+    },
+    {
+      type: 'category',
+      label: 'Week 8: NVIDIA Isaac Platform Intro',
+      items: ['week-8/isaac-platform-intro'],
+    },
+    {
+      type: 'category',
+      label: 'Week 9: NVIDIA Isaac ROS 2 Advanced',
+      items: ['week-9/isaac-ros2-advanced'],
+    },
+    {
+      type: 'category',
+      label: 'Week 10: NVIDIA Isaac Multi-Robot & AI Training',
+      items: ['week-10/isaac-multi-robot-ai-training'],
+    },
+    {
+      type: 'category',
+      label: 'Week 11: Humanoid Design & Actuation',
+      items: ['week-11/humanoid-design-actuation'],
+    },
+    {
+      type: 'category',
+      label: 'Week 12: Humanoid Perception, Control & Interaction',
+      items: ['week-12/humanoid-perception-control-interaction'],
+    },
+    {
+      type: 'category',
+      label: 'Week 13: Conversational Robotics & NLP',
+      items: ['week-13/conversational-robotics-nlp'],
     },
   ],
 };

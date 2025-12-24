@@ -47,12 +47,16 @@ else
     touch "$IMPL_PLAN"
 fi
 
-# Output results
-if $JSON_MODE; then
-    printf '{"FEATURE_SPEC":"%s","IMPL_PLAN":"%s","SPECS_DIR":"%s","BRANCH":"%s","HAS_GIT":"%s"}\n' \
-        "$FEATURE_SPEC" "$IMPL_PLAN" "$FEATURE_DIR" "$CURRENT_BRANCH" "$HAS_GIT"
-else
-    echo "FEATURE_SPEC: $FEATURE_SPEC"
+    # Output results
+    echo "DEBUG: FEATURE_SPEC=$FEATURE_SPEC" >&2
+    echo "DEBUG: IMPL_PLAN=$IMPL_PLAN" >&2
+    echo "DEBUG: SPECS_DIR=$FEATURE_DIR" >&2
+    echo "DEBUG: BRANCH=$CURRENT_BRANCH" >&2
+    echo "DEBUG: HAS_GIT=$HAS_GIT" >&2
+    if $JSON_MODE; then
+        printf '{"FEATURE_SPEC":"%s","IMPL_PLAN":"%s","SPECS_DIR":"%s","BRANCH":"%s","HAS_GIT":"%s"}\n' \
+            "$FEATURE_SPEC" "$IMPL_PLAN" "$FEATURE_DIR" "$CURRENT_BRANCH" "$HAS_GIT"
+    else    echo "FEATURE_SPEC: $FEATURE_SPEC"
     echo "IMPL_PLAN: $IMPL_PLAN" 
     echo "SPECS_DIR: $FEATURE_DIR"
     echo "BRANCH: $CURRENT_BRANCH"

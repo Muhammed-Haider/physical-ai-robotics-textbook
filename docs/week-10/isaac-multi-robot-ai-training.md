@@ -84,6 +84,42 @@ Beyond just generating data, Isaac Sim can serve as a direct training environmen
 
 **Expected Output**: Multiple robot models appear in Isaac Sim. When you list ROS 2 topics/nodes, you will see separate communication channels for each robot, indicating successful namespacing.
 
+### Exercise 2: Implementing a Simple Multi-Robot Coordination Strategy
+
+**Challenge Level**: Intermediate
+
+**Objective**: Implement a simple centralized ROS 2 node to coordinate the movement of two simulated robots to avoid a static obstacle.
+
+**Tools**: Isaac Sim, ROS 2, a scene with two robots and a static obstacle.
+
+**Steps**:
+1.  **Set up Isaac Sim** with two robots (e.g., `turtlebot3_burger`) and a static obstacle between them.
+2.  **Create a ROS 2 package** for your coordinator node.
+3.  **Write a Python coordinator node**:
+    *   This node will subscribe to the odometry (position) topics of both robots (`/robot1/odom`, `/robot2/odom`).
+    *   It will publish `geometry_msgs/msg/Twist` commands to each robot's `/cmd_vel` topic (e.g., `/robot1/cmd_vel`, `/robot2/cmd_vel`).
+    *   Implement simple logic: if robots are too close to the obstacle or each other, issue commands to steer away or stop.
+
+**Expected Output**: The two robots will navigate in the simulated environment, and your coordinator node will attempt to prevent collisions with the static obstacle and each other.
+
+### Exercise 3: Basic Synthetic Data Generation
+
+**Challenge Level**: Intermediate
+
+**Objective**: Use Isaac Sim to generate a dataset of images with ground truth segmentation masks for a simple object.
+
+**Tools**: Isaac Sim, a scene with a robot and an object.
+
+**Steps**:
+1.  **Launch Isaac Sim** and load a scene with your robot and a distinct object (e.g., a cube with a unique material).
+2.  **Enable the `Omni.SyntheticData` extension** in Isaac Sim.
+3.  **Add a `Randomizer` component** to your object to randomize its position, rotation, and scale slightly.
+4.  **Add a `Camera`** to your scene or robot and configure it to output synthetic data.
+5.  **Add a `Writer` node** to save the generated data (e.g., RGB images, instance segmentation masks) to disk.
+6.  **Run the simulation** for a short period to collect data.
+
+**Expected Output**: A folder containing sequences of RGB images and corresponding ground truth segmentation masks for the randomized object.
+
 ## Creative Challenge: Simple Multi-Robot Coordination (FR-004: Creative Synthesis)
 
 **Design Task**: Building on Exercise 1, outline a ROS 2 based coordination strategy for your two simulated robots to avoid a collision while moving towards separate goals. Consider using either a centralized "traffic controller" node or a decentralized "collision avoidance" behavior for each robot. Which approach seems more robust for a larger fleet?

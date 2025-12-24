@@ -137,6 +137,87 @@ ROS 2 provides a powerful suite of command-line interface (CLI) tools, `ros2 <co
 
 **Expected Output**: The `custom_parameter_node` will start and log "Hello ROS2!" messages, demonstrating that the parameter was successfully overridden by the launch file.
 
+### Exercise 2: Using CLI Tools for Parameters
+
+**Challenge Level**: Beginner
+
+**Objective**: Use ROS 2 command-line tools to inspect and change the parameters of a running node.
+
+**Tools**: The running `parameter_node` from Exercise 1.
+
+**Steps**:
+1.  **In a new terminal**, while the launch file from Exercise 1 is running, list all the nodes:
+    ```bash
+    ros2 node list
+    ```
+    You should see `/custom_parameter_node` in the list.
+
+2.  **List the parameters** of your node:
+    ```bash
+    ros2 param list /custom_parameter_node
+    ```
+
+3.  **Get the current value** of the `my_parameter` parameter:
+    ```bash
+    ros2 param get /custom_parameter_node my_parameter
+    ```
+    This should return `ROS2`.
+
+4.  **Change the parameter's value** at runtime:
+    ```bash
+    ros2 param set /custom_parameter_node my_parameter "Gemini"
+    ```
+
+**Expected Output**: After running the `set` command, the output of your `custom_parameter_node` will change from "Hello ROS2!" to "Hello Gemini!", demonstrating dynamic reconfiguration.
+
+### Exercise 3: Topic Remapping in a Launch File
+
+**Challenge Level**: Intermediate
+
+**Objective**: Use a launch file to remap a topic name for your publisher and subscriber nodes.
+
+**Tools**: The `talker` and `listener` nodes from Week 4.
+
+**Steps**:
+1.  **Create a new launch file** named `launch/remapping_launch.py`:
+    ```python
+    from launch import LaunchDescription
+    from launch_ros.actions import Node
+
+    def generate_launch_description():
+        return LaunchDescription([
+            Node(
+                package='my_first_package',
+                executable='talker',
+                name='my_talker',
+                remappings=[
+                    ('/topic', '/chatter')
+                ]
+            ),
+            Node(
+                package='my_first_package',
+                executable='listener',
+                name='my_listener',
+                remappings=[
+                    ('/topic', '/chatter')
+                ]
+            )
+        ])
+    ```
+
+2.  **Run the launch file**:
+    ```bash
+    ros2 launch my_first_package remapping_launch.py
+    ```
+
+3.  **In a new terminal**, check the active topics:
+    ```bash
+    ros2 topic list
+    ```
+    You should see `/chatter` in the list instead of `/topic`.
+
+**Expected Output**: The `my_listener` node will successfully receive messages from `my_talker` on the `/chatter` topic, demonstrating that the remapping was successful.
+
 ## Creative Challenge: Multi-Node Orchestration (FR-004: Creative Synthesis)
 
 **Design Task**: Expand `my_launch_file.py` to start both your `talker` and `listener` nodes from Week 4, along with the `parameter_node`. Use parameter remapping to change the `topic` name for the `talker` and `listener` nodes to `chatter_topic` within the launch file. Verify communication with `ros2 topic echo chatter_topic`.

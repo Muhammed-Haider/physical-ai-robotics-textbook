@@ -1,16 +1,16 @@
 /* === Colors === */
 :root {
-  --primary: #007aff;
-  --primary-light: #3399ff;
-  --primary-dark: #005bb5;
-  --text-primary: #ffffff;
-  --text-secondary: #e0e0e0;
-  --text-tertiary: #a0a0a0;
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2a2a2a;
-  --bg-tertiary: #333333;
-  --border: #2a2a2a;
-  --border-light: #3a3a3a;
+  --primary: #005F73; /* Deep Teal */
+  --primary-light: #008799; /* Lighter Deep Teal */
+  --primary-dark: #003740; /* Darker Deep Teal */
+  --text-primary: #2D2D2D; /* Deep Charcoal */
+  --text-secondary: #4a4a4a; /* Slightly lighter deep charcoal for secondary text */
+  --text-tertiary: #6e6e6e; /* Medium charcoal for tertiary text */
+  --bg-primary: #F5F5F1; /* Off-white/Eggshell */
+  --bg-secondary: #EBEBE6; /* Slightly darker off-white for cards, admonitions */
+  --bg-tertiary: #E0E0DB; /* Even darker off-white for code blocks */
+  --border: #d4d4cf; /* Light grey border */
+  --border-light: #c0c0bb; /* Lighter grey border */
   
   /* Spacing Scale (8px base) */
   --space-xs: 0.5rem;
@@ -217,7 +217,7 @@ body {
   text-decoration: none;
 }
 .admonition.admonition-info {
-  border-left-color: var(--primary); /* Blue */
+  border-left-color: var(--primary); /* Deep Teal */
   background-color: color-mix(in srgb, var(--primary) 5%, transparent);
 }
 .admonition.admonition-tip { /* For success/tip, use green */
@@ -232,4 +232,28 @@ body {
 .admonition.admonition-danger {
   border-left-color: var(--accent-red);
   background-color: color-mix(in srgb, var(--accent-red) 5%, transparent);
+}
+
+/* Sidebar text color adjustments */
+.menu__link {
+  color: var(--text-primary); /* Apply primary text color */
+}
+
+.menu__link:hover {
+  color: var(--primary); /* Use primary accent color on hover */
+  background-color: var(--bg-secondary); /* A subtle background change on hover */
+}
+
+.menu__link--active {
+  color: var(--primary); /* Use primary accent color for active link */
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent); /* Subtle background for active */
+}
+
+/* Adjust category label color */
+.menu__list-item--collapsed .menu__link {
+  color: var(--text-secondary); /* Less prominent for collapsed categories */
+}
+
+.menu__list-item-collapsible__icon {
+    color: var(--text-secondary);
 }

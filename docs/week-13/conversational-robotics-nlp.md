@@ -134,6 +134,208 @@ Building conversational robot interfaces often involves integrating various AI a
 
 **Expected Output**: The simulated robot in Gazebo will move accordingly to the commands published on the `/voice_command` topic, demonstrating a basic conversational interface.
 
+### Exercise 2: Integrating Speech Recognition for Real Voice Commands
+
+**Challenge Level**: Intermediate
+
+**Objective**: Modify the previous `voice_commander` node to use an actual microphone for speech input and convert it to text commands.
+
+**Tools**: ROS 2 development environment, a simple robot simulation (e.g., TurtleBot in Gazebo), Python, `SpeechRecognition` library, a microphone.
+
+**Steps**:
+1.  **Install `SpeechRecognition` and PyAudio**:
+    ```bash
+    pip install SpeechRecognition
+    sudo apt-get install python3-pyaudio # For microphone access
+    ```
+2.  **Modify the `VoiceCommander` node** (`voice_commander.py`) from Exercise 1. Replace the subscription to `/voice_command` with microphone input using `speech_recognition`.
+    ```python
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+    from geometry_msgs.msg import Twist
+    import speech_recognition as sr
+    import threading
+
+    class VoiceCommander(Node):
+        def __init__(self):
+            super().__init__('voice_commander')
+            self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
+            self.get_logger().info('Voice Commander Node started. Listening for commands...')
+
+            self.command_map = {
+                "forward": (0.2, 0.0),
+                "backward": (-0.2, 0.0),
+                "left": (0.0, 0.5),
+                "right": (0.0, -0.5),
+                "stop": (0.0, 0.0)
+            }
+
+            self.listening_thread = threading.Thread(target=self.listen_continuously)
+            self.listening_thread.daemon = True
+            self.listening_thread.start()
+
+        def listen_continuously(self):
+            with self.microphone as source:
+                self.recognizer.adjust_for_ambient_noise(source)
+                while rclpy.ok():
+                    try:
+                        self.get_logger().info("Say a command! (e.g., forward, stop)")
+                        audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                        text = self.recognizer.recognize_google(audio).lower()
+                        self.get_logger().info(f"You said: '{text}'")
+                        self.process_command(text)
+                    except sr.UnknownValueError:
+                        self.get_logger().warn("Could not understand audio")
+                    except sr.WaitTimeoutError:
+                        pass # No speech detected within timeout
+                    except Exception as e:
+                        self.get_logger().error(f"An error occurred: {e}")
+
+        def process_command(self, text_command):
+            twist = Twist()
+            matched = False
+            for cmd_word, (linear_x, angular_z) in self.command_map.items():
+                if cmd_word in text_command:
+                    twist.linear.x = linear_x
+                    twist.angular.z = angular_z
+                    matched = True
+                    break
+            
+            if not matched:
+                self.get_logger().info(f"Command '{text_command}' not recognized.")
+            
+            self.publisher_.publish(twist)
+            self.get_logger().info(f'Published Twist: linear.x={twist.linear.x}, angular.z={twist.angular.z}')
+
+
+    def main(args=None):
+        rclpy.init(args=args)
+        node = VoiceCommander()
+        rclpy.spin(node) # Keeps node alive and processes callbacks
+        node.destroy_node()
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+3.  **Run the `voice_commander` node**: `ros2 run your_package_name voice_commander`
+4.  **Speak commands** into your microphone.
+
+**Expected Output**: The robot in Gazebo will respond to your spoken commands, demonstrating real-time speech recognition and control.
+
+### Exercise 3: Generating Robot Responses (NLG) with Text-to-Speech
+
+**Challenge Level**: Intermediate
+
+**Objective**: Enhance the `voice_commander` node to provide verbal feedback to the user after processing a command, using text-to-speech.
+
+**Tools**: ROS 2 development environment, Python, `gTTS` (Google Text-to-Speech) library, `pygame` for audio playback, a speaker.
+
+**Steps**:
+1.  **Install necessary libraries**:
+    ```bash
+    pip install gTTS pygame
+    ```
+2.  **Modify the `VoiceCommander` node** (`voice_commander.py`).
+    *   Import `gTTS` and `pygame.mixer`.
+    *   Initialize `pygame.mixer`.
+    *   After processing a command, generate a verbal response using `gTTS` and play it.
+    ```python
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+    from geometry_msgs.msg import Twist
+    import speech_recognition as sr
+    import threading
+    from gtts import gTTS
+    import pygame
+    import os
+
+    class VoiceCommander(Node):
+        def __init__(self):
+            super().__init__('voice_commander')
+            self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
+            self.get_logger().info('Voice Commander Node started. Listening for commands...')
+
+            pygame.mixer.init()
+
+            self.command_map = {
+                "forward": (0.2, 0.0, "Moving forward."),
+                "backward": (-0.2, 0.0, "Moving backward."),
+                "left": (0.0, 0.5, "Turning left."),
+                "right": (0.0, -0.5, "Turning right."),
+                "stop": (0.0, 0.0, "Stopping now.")
+            }
+
+            self.listening_thread = threading.Thread(target=self.listen_continuously)
+            self.listening_thread.daemon = True
+            self.listening_thread.start()
+
+        def speak(self, text):
+            tts = gTTS(text=text, lang='en')
+            filename = "/tmp/robot_response.mp3"
+            tts.save(filename)
+            pygame.mixer.music.load(filename)
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy():
+                pygame.time.Clock().tick(10)
+            os.remove(filename) # Clean up the audio file
+
+        def listen_continuously(self):
+            with self.microphone as source:
+                self.recognizer.adjust_for_ambient_noise(source)
+                while rclpy.ok():
+                    try:
+                        self.get_logger().info("Say a command! (e.g., forward, stop)")
+                        audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                        text = self.recognizer.recognize_google(audio).lower()
+                        self.get_logger().info(f"You said: '{text}'")
+                        self.process_command(text)
+                    except sr.UnknownValueError:
+                        self.get_logger().warn("Could not understand audio")
+                        self.speak("I did not understand that.")
+                    except sr.WaitTimeoutError:
+                        pass
+                    except Exception as e:
+                        self.get_logger().error(f"An error occurred: {e}")
+
+        def process_command(self, text_command):
+            twist = Twist()
+            response_text = "Command not recognized."
+            matched = False
+            for cmd_word, (linear_x, angular_z, feedback) in self.command_map.items():
+                if cmd_word in text_command:
+                    twist.linear.x = linear_x
+                    twist.angular.z = angular_z
+                    response_text = feedback
+                    matched = True
+                    break
+            
+            self.publisher_.publish(twist)
+            self.get_logger().info(f'Published Twist: linear.x={twist.linear.x}, angular.z={twist.angular.z}')
+            self.speak(response_text)
+
+
+    def main(args=None):
+        rclpy.init(args=args)
+        node = VoiceCommander()
+        rclpy.spin(node)
+        node.destroy_node()
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+3.  **Run the `voice_commander` node**: `ros2 run your_package_name voice_commander`
+4.  **Speak commands** into your microphone.
+
+**Expected Output**: The robot will respond to your spoken commands verbally (via your speakers) and move in the Gazebo simulation, completing a basic conversational loop.
+
 ## Creative Challenge: Context-Aware Robot Responses (FR-004: Creative Synthesis)
 
 **Design Task**: Extend the `voice_commander.py` node to provide text feedback to the user (e.g., "Moving forward, sir!") based on the executed command. How would you make this feedback context-aware (e.g., acknowledging obstacles if sensed, or confirming completion of a navigation task)?

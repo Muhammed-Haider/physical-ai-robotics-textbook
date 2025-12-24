@@ -66,6 +66,48 @@ One of the most powerful features of Isaac Sim is its ability to generate synthe
 
 **Expected Output**: By pressing keys in the teleoperation terminal, you should observe the simulated robot in Isaac Sim moving accordingly (forward, backward, turning). This confirms successful ROS 2 integration.
 
+### Exercise 2: Publishing Simulated Sensor Data to ROS 2
+
+**Challenge Level**: Intermediate
+
+**Objective**: Configure a simulated camera in Isaac Sim to publish its image data to a ROS 2 topic.
+
+**Tools**: Isaac Sim, ROS 2.
+
+**Steps**:
+1.  **Add a camera to your robot** in Isaac Sim if it doesn't have one.
+2.  **Add a ROS 2 Camera Helper** to the camera in the OmniGraph editor.
+3.  **Configure the ROS 2 Camera Helper**:
+    *   Set the `topicName` to `/my_robot/camera/image_raw`.
+    *   Ensure the `frameId` is set to the camera's link name.
+4.  **Play the simulation**.
+5.  **In a new terminal**, echo the camera topic to verify that data is being published:
+    ```bash
+    ros2 topic echo /my_robot/camera/image_raw
+    ```
+
+**Expected Output**: You should see ROS 2 messages being printed in the terminal, representing the image data from the simulated camera.
+
+### Exercise 3: Using Isaac ROS for Apriltag Detection
+
+**Challenge Level**: Advanced
+
+**Objective**: Use the Isaac ROS Apriltag package to detect an Apriltag in the simulated environment.
+
+**Tools**: Isaac Sim, ROS 2, Isaac ROS Apriltag package.
+
+**Steps**:
+1.  **Install the Isaac ROS Apriltag package**.
+2.  **Add an Apriltag** to your Isaac Sim environment from the Isaac Sim assets.
+3.  **Ensure your simulated camera is publishing images** to a ROS 2 topic.
+4.  **Launch the Isaac ROS Apriltag node**, remapping the input image topic to your camera's topic.
+    ```bash
+    ros2 launch isaac_ros_apriltag isaac_ros_apriltag.launch.py image:=/my_robot/camera/image_raw camera_info:=/my_robot/camera/camera_info
+    ```
+5.  **Visualize the detections**: In RViz2, add a `MarkerArray` display and subscribe to the `/tag_detections` topic.
+
+**Expected Output**: When the simulated camera is looking at the Apriltag, you should see markers in RViz2 indicating the detected tag's position and orientation.
+
 ## Creative Challenge: Synthetic Data Generation for Object Detection (FR-004: Creative Synthesis)
 
 **Design Task**: Imagine you need to train an AI model to detect specific objects (e.g., different types of boxes) in a warehouse environment. Outline a strategy using Isaac Sim's synthetic data generation capabilities to create a diverse dataset for this task. What variations (lighting, textures, poses, occlusions) would you include?

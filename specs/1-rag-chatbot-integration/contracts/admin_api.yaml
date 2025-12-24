@@ -1,0 +1,205 @@
+openapi: 3.0.0
+info:
+  title: RAG Chatbot Admin API
+  version: 1.0.0
+  description: API for administrative tasks related to the RAG chatbot, including document ingestion and configuration.
+
+servers:
+  - url: /api/v1
+    description: Base URL for the Admin API
+
+paths:
+  /admin/ingest:
+    post:
+      summary: Trigger documentation ingestion from specified sources
+      security:
+        - AdminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source_ids
+              properties:
+                source_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of source IDs to ingest.
+      responses:
+        '202':
+          description: Ingestion process initiated.
+        '401':
+          description: Unauthorized (Admin access required).
+        '500':
+          description: Internal server error during ingestion.
+
+  /admin/sources:
+    get:
+      summary: List configured documentation sources
+      security:
+        - AdminAuth: []
+      responses:
+        '200':
+          description: List of documentation sources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    type:
+                      type: string
+                      enum: [local_directory, github_repo]
+                    path:
+                      type: string
+                      description: Local directory path or GitHub repository URL.
+                    status:
+                      type: string
+                      enum: [active, inactive, indexing]
+                      description: Current status of the source.
+        '401':
+          description: Unauthorized (Admin access required).
+    post:
+      summary: Configure a new documentation source
+      security:
+        - AdminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+                - path
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [local_directory, github_repo]
+                path:
+                  type: string
+      responses:
+        '201':
+          description: Documentation source configured successfully.
+        '400':
+          description: Invalid request.
+        '401':
+          description: Unauthorized (Admin access required).
+
+  /admin/sources/{source_id}:
+    put:
+      summary: Update an existing documentation source
+      security:
+        - AdminAuth: []
+      parameters:
+        - in: path
+          name: source_id
+          schema:
+            type: string
+          required: true
+          description: ID of the documentation source to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [local_directory, github_repo]
+                path:
+                  type: string
+      responses:
+        '200':
+          description: Documentation source updated successfully.
+        '400':
+          description: Invalid request.
+        '401':
+          description: Unauthorized (Admin access required).
+        '404':
+          description: Source not found.
+    delete:
+      summary: Delete a documentation source
+      security:
+        - AdminAuth: []
+      parameters:
+        - in: path
+          name: source_id
+          schema:
+            type: string
+          required: true
+          description: ID of the documentation source to delete.
+      responses:
+        '204':
+          description: Documentation source deleted successfully.
+        '401':
+          description: Unauthorized (Admin access required).
+        '404':
+          description: Source not found.
+
+  /admin/reindex:
+    post:
+      summary: Manually trigger re-indexing of all active documentation sources
+      security:
+        - AdminAuth: []
+      responses:
+        '202':
+          description: Re-indexing process initiated.
+        '401':
+          description: Unauthorized (Admin access required).
+
+  /admin/logs:
+    get:
+      summary: Retrieve system logs for the RAG service
+      security:
+        - AdminAuth: []
+      parameters:
+        - in: query
+          name: level
+          schema:
+            type: string
+            enum: [INFO, WARNING, ERROR, DEBUG]
+            default: INFO
+          description: Filter logs by level.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 100
+          description: Maximum number of log entries to retrieve.
+      responses:
+        '200':
+          description: System logs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+                    level:
+                      type: string
+                    message:
+                      type: string
+                    details:
+                      type: object
+                      nullable: true
+        '401':
+          description: Unauthorized (Admin access required).
