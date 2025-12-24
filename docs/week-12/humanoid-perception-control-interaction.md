@@ -87,6 +87,137 @@ Developing software for humanoids often involves specialized frameworks building
 
 **Expected Output**: The humanoid robot in Gazebo performs a stable walking motion. You should be able to see joint states being published and control commands being sent to the robot's actuators.
 
+### Exercise 2: Humanoid Pose Estimation from Camera Data
+
+**Challenge Level**: Advanced
+
+**Objective**: Use an open-source pose estimation library (e.g., MediaPipe, OpenPose) to detect and visualize human keypoints from a camera feed, simulating a humanoid robot observing a human.
+
+**Tools**: A webcam or pre-recorded video, Python, an open-source pose estimation library (e.g., `mediapipe`).
+
+**Steps**:
+1.  **Install a pose estimation library**:
+    ```bash
+    pip install mediapipe opencv-python
+    ```
+2.  **Write a Python script** to capture video from a webcam (or process a video file) and perform pose estimation.
+    ```python
+    import cv2
+    import mediapipe as mp
+
+    mp_pose = mp.solutions.pose
+    mp_drawing = mp.solutions.drawing_utils
+
+    cap = cv2.VideoCapture(0) # Change to video file path if needed
+
+    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            # Convert the BGR image to RGB.
+            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image.flags.writeable = False
+
+            # Process the image and find pose.
+            results = pose.process(image)
+
+            # Draw the pose annotation on the image.
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            mp_drawing.draw_landmarks(
+                image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2),
+                mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
+
+            cv2.imshow('MediaPipe Pose', image)
+            if cv2.waitKey(5) & 0xFF == 27:
+                break
+
+    cap.release()
+    cv2.destroyAllWindows()
+    ```
+3.  **Run the script** and observe the real-time pose estimation.
+
+**Expected Output**: The script will display a window showing the camera feed with detected human keypoints and skeletal connections overlayed, demonstrating the robot's "perception" of human posture.
+
+### Exercise 3: Simple Human-Robot Interaction (HRI) with Voice Commands
+
+**Challenge Level**: Intermediate
+
+**Objective**: Create a simple ROS 2 node that uses speech recognition to process voice commands and trigger a predefined robot action (e.g., "stop" or "wave").
+
+**Tools**: ROS 2, Python, speech_recognition library, a microphone.
+
+**Steps**:
+1.  **Install necessary libraries**:
+    ```bash
+    pip install SpeechRecognition
+    sudo apt-get install python3-pyaudio # For microphone access
+    ```
+2.  **Create a ROS 2 package** and a Python node (e.g., `hri_node.py`).
+3.  **Write the HRI node**:
+    *   Initialize a `SpeechRecognizer`.
+    *   Use the microphone to listen for commands.
+    *   Process recognized commands (e.g., "robot stop", "robot wave").
+    *   Publish a ROS 2 message (e.g., a custom `String` message or a `Bool` to a `/robot_cmd` topic) to trigger a robot action.
+    *   You would need a separate robot control node (from previous exercises) subscribed to this topic to perform the action.
+    ```python
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+    import speech_recognition as sr
+
+    class HRICommander(Node):
+        def __init__(self):
+            super().__init__('hri_commander')
+            self.publisher_ = self.create_publisher(String, 'robot_command', 10)
+            self.recognizer = sr.Recognizer()
+            self.get_logger().info('HRI Commander Node started. Listening for commands...')
+            self.start_listening()
+
+        def start_listening(self):
+            with sr.Microphone() as source:
+                self.recognizer.adjust_for_ambient_noise(source)
+                while rclpy.ok():
+                    try:
+                        self.get_logger().info("Say something!")
+                        audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                        text = self.recognizer.recognize_google(audio)
+                        self.get_logger().info(f"You said: {text}")
+
+                        msg = String()
+                        msg.data = text.lower()
+                        self.publisher_.publish(msg)
+
+                    except sr.UnknownValueError:
+                        self.get_logger().warn("Google Speech Recognition could not understand audio")
+                    except sr.RequestError as e:
+                        self.get_logger().error(f"Could not request results from Google Speech Recognition service; {e}")
+                    except Exception as e:
+                        self.get_logger().error(f"An unexpected error occurred: {e}")
+                    
+                    rclpy.spin_once(self, timeout_sec=0.1) # Keep node alive while listening
+
+    def main(args=None):
+        rclpy.init(args=args)
+        hri_commander = HRICommander()
+        try:
+            hri_commander.start_listening()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            hri_commander.destroy_node()
+            rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+4.  **Run your HRI node**: `ros2 run your_package hri_commander`
+
+**Expected Output**: The node will print transcribed voice commands to the console and publish them as ROS 2 messages. A separate robot node (if implemented) would then react to these commands.
+
 ## Creative Challenge: Human-Robot Collaboration Scenario (FR-004: Creative Synthesis)
 
 **Design Task**: Outline a scenario where a humanoid robot needs to safely assist a human in a home environment (e.g., helping a person stand up). Describe the perceptual inputs the robot would need, the control decisions it would make, and how it would communicate its intentions to ensure human safety and trust.

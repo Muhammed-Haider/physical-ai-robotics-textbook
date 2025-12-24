@@ -64,9 +64,13 @@ Isaac Sim is NVIDIA's flagship robotics simulation platform. It's built on **NVI
 
 **Expected Output**: You should be able to smoothly navigate the Isaac Sim environment and successfully manipulate 3D primitive objects within the scene, observing realistic physics interactions when simulation is active.
 
-### 2. Importing and Manipulating Robot Models (FR-002: Constructivist Activity)
+### Exercise 2: Importing and Manipulating a Robot Model
+
+**Challenge Level**: Beginner
 
 **Objective**: Import an existing robot model into Isaac Sim and perform basic manipulations.
+
+**Tools**: Isaac Sim.
 
 **Steps**:
 1.  **Stop the simulation (if running)**.
@@ -79,6 +83,26 @@ Isaac Sim is NVIDIA's flagship robotics simulation platform. It's built on **NVI
     *   Experiment with `Physics -> Play`. Observe how the robot behaves under gravity and joint limits.
 
 **Expected Output**: The Franka Panda robot model should load correctly. You should be able to move its joints and see it interact realistically with the environment when the simulation is played.
+
+### Exercise 3: Adding a Camera to the Scene
+
+**Challenge Level**: Beginner
+
+**Objective**: Add a camera to the Isaac Sim scene and view its output.
+
+**Tools**: Isaac Sim.
+
+**Steps**:
+1.  **Create a camera**:
+    *   Go to `Create -> Camera`.
+    *   A camera will be added to your scene.
+2.  **Position the camera**:
+    *   Use the translation and rotation tools to position the camera so that it has a good view of the robot.
+3.  **View from the camera**:
+    *   In the viewport, click on the "Perspective" dropdown and select your new camera.
+    *   The viewport will now show the scene from the camera's perspective.
+
+**Expected Output**: You will have a new camera in your scene, and you will be able to switch the viewport to see the world from the camera's point of view.
 
 ## Creative Challenge: Building a Simple Environment (FR-004: Creative Synthesis)
 

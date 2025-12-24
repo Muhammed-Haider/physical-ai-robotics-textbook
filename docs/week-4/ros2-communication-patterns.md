@@ -193,6 +193,140 @@ Actions are built on top of services and topics, designed for long-running, goal
 
 **Expected Output**: The `talker` terminal will show "Publishing: Hello World: X" messages, and the `listener` terminal will show "I heard: Hello World: X" messages, demonstrating successful communication.
 
+### Exercise 3: Creating a ROS 2 Service
+
+**Challenge Level**: Intermediate
+
+**Objective**: Create a ROS 2 service that adds two integers.
+
+**Tools**: ROS 2 development environment.
+
+**Steps**:
+1.  **Define a service file**:
+    In your `~/ros2_ws/src/my_first_package` directory, create a new directory called `srv`. Inside `srv`, create a file named `AddTwoInts.srv`:
+    ```
+    int64 a
+    int64 b
+    ---
+    int64 sum
+    ```
+
+2.  **Update `CMakeLists.txt`**: Add the following lines to your `CMakeLists.txt` to generate the service files:
+    ```cmake
+    find_package(rosidl_default_generators REQUIRED)
+
+    rosidl_generate_interfaces(${PROJECT_NAME}
+      "msg/RobotStatus.msg"
+      "srv/AddTwoInts.srv"
+    )
+    ```
+
+3.  **Update `package.xml`**: Ensure you have the following dependencies:
+    ```xml
+    <build_depend>rosidl_default_generators</build_depend>
+    <exec_depend>rosidl_default_runtime</exec_depend>
+    <member_of_group>rosidl_interface_packages</member_of_group>
+    ```
+
+4.  **Create the service node (`service_node.py`)**:
+    In `~/ros2_ws/src/my_first_package/my_first_package`, create a file named `service_node.py`:
+    ```python
+    from my_first_package.srv import AddTwoInts
+    import rclpy
+    from rclpy.node import Node
+
+    class MinimalService(Node):
+
+        def __init__(self):
+            super().__init__('minimal_service')
+            self.srv = self.create_service(AddTwoInts, 'add_two_ints', self.add_two_ints_callback)
+
+        def add_two_ints_callback(self, request, response):
+            response.sum = request.a + request.b
+            self.get_logger().info('Incoming request\na: %d b: %d' % (request.a, request.b))
+            self.get_logger().info('Sending back response: [%d]' % (response.sum))
+            return response
+
+    def main(args=None):
+        rclpy.init(args=args)
+        minimal_service = MinimalService()
+        rclpy.spin(minimal_service)
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+
+5.  **Create the client node (`client_node.py`)**:
+    In the same directory, create `client_node.py`:
+    ```python
+    from my_first_package.srv import AddTwoInts
+    import rclpy
+    from rclpy.node import Node
+
+    class MinimalClientAsync(Node):
+
+        def __init__(self):
+            super().__init__('minimal_client_async')
+            self.cli = self.create_client(AddTwoInts, 'add_two_ints')
+            while not self.cli.wait_for_service(timeout_sec=1.0):
+                self.get_logger().info('service not available, waiting again...')
+            self.req = AddTwoInts.Request()
+
+        def send_request(self):
+            self.req.a = 41
+            self.req.b = 1
+            self.future = self.cli.call_async(self.req)
+
+    def main(args=None):
+        rclpy.init(args=args)
+        minimal_client = MinimalClientAsync()
+        minimal_client.send_request()
+
+        while rclpy.ok():
+            rclpy.spin_once(minimal_client)
+            if minimal_client.future.done():
+                try:
+                    response = minimal_client.future.result()
+                except Exception as e:
+                    minimal_client.get_logger().info(
+                        'Service call failed %r' % (e,))
+                else:
+                    minimal_client.get_logger().info(
+                        'Result of add_two_ints: for %d + %d = %d' %
+                        (minimal_client.req.a, minimal_client.req.b, response.sum))
+                break
+
+        minimal_client.destroy_node()
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+
+6.  **Update `setup.py`**: Add the new nodes to your `entry_points`:
+    ```python
+    'service = my_first_package.service_node:main',
+    'client = my_first_package.client_node:main',
+    ```
+
+7.  **Build and run**:
+    ```bash
+    cd ~/ros2_ws
+    colcon build
+    . install/setup.bash
+    ```
+    In one terminal, run the service:
+    ```bash
+    ros2 run my_first_package service
+    ```
+    In another terminal, run the client:
+    ```bash
+    ros2 run my_first_package client
+    ```
+
+**Expected Output**: The client will send a request, the service will process it and log the request, and the client will receive and log the response.
+
 ## Creative Challenge: Custom Message Communication (FR-004: Creative Synthesis)
 
 **Design Task**: Modify Exercise 2 to use your `RobotStatus.msg` custom message. Create a publisher that sends `RobotStatus` messages and a subscriber that receives and interprets them. Can you add logic to the subscriber to react differently based on the `battery_level` or `is_charging` status?

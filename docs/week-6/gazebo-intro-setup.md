@@ -70,6 +70,102 @@ URDF is an XML format used in ROS to describe all elements of a robot. It define
 
 **Expected Output**: The Gazebo GUI should open, and you should see a grey cube model appear, falling slightly and resting on the ground plane due to gravity.
 
+### Exercise 2: Creating a Simple URDF Model
+
+**Challenge Level**: Beginner
+
+**Objective**: Create a simple URDF file for a two-wheeled robot.
+
+**Tools**: A text editor.
+
+**Steps**:
+1.  **Create a new directory** in your ROS 2 workspace for your robot description:
+    ```bash
+    mkdir -p ~/ros2_ws/src/my_robot_description/urdf
+    cd ~/ros2_ws/src/my_robot_description/urdf
+    ```
+
+2.  **Create a new file** named `my_robot.urdf` and add the following content:
+    ```xml
+    <?xml version="1.0"?>
+    <robot name="my_robot">
+      <link name="base_link">
+        <visual>
+          <geometry>
+            <cylinder length="0.6" radius="0.2"/>
+          </geometry>
+        </visual>
+      </link>
+
+      <link name="right_wheel">
+        <visual>
+          <geometry>
+            <cylinder length="0.1" radius="0.15"/>
+          </geometry>
+        </visual>
+      </link>
+
+      <joint name="base_to_right_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin xyz="0 -0.25 0" rpy="1.5707 0 0"/>
+      </joint>
+    </robot>
+    ```
+
+**Expected Output**: You have created a URDF file that describes a simple robot with a body and one wheel.
+
+### Exercise 3: Spawning a Custom URDF Model in Gazebo
+
+**Challenge Level**: Intermediate
+
+**Objective**: Launch Gazebo and spawn your custom URDF robot model.
+
+**Tools**: Gazebo, ROS 2, and the URDF file from Exercise 2.
+
+**Steps**:
+1.  **Create a launch file** to spawn your robot. Create a `launch` directory in your `my_robot_description` package and add the following file `spawn_robot.launch.py`:
+    ```python
+    import os
+    from ament_index_python.packages import get_package_share_directory
+    from launch import LaunchDescription
+    from launch.actions import ExecuteProcess
+    from launch_ros.actions import Node
+
+    def generate_launch_description():
+        robot_description_path = os.path.join(
+            get_package_share_directory('my_robot_description'),
+            'urdf',
+            'my_robot.urdf'
+        )
+
+        return LaunchDescription([
+            ExecuteProcess(
+                cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so'],
+                output='screen'
+            ),
+            Node(
+                package='gazebo_ros',
+                executable='spawn_entity.py',
+                arguments=['-entity', 'my_robot', '-file', robot_description_path],
+                output='screen'
+            )
+        ])
+    ```
+
+2.  **Update `package.xml` and `setup.py`**:
+    Add dependencies to `package.xml` and install the launch and urdf directories in `setup.py`.
+
+3.  **Build and launch**:
+    ```bash
+    cd ~/ros2_ws
+    colcon build
+    . install/setup.bash
+    ros2 launch my_robot_description spawn_robot.launch.py
+    ```
+
+**Expected Output**: Gazebo will launch, and your custom robot model (a cylinder with a wheel) will be spawned in the world.
+
 ## Creative Challenge: Modifying a Basic World (FR-004: Creative Synthesis)
 
 **Design Task**: Gazebo uses SDF files for world descriptions. Can you find the default `empty.world` file (usually in `/usr/share/gazebo-X/worlds/`) and modify it to add a simple box obstacle? How would you then launch Gazebo with your modified world file?

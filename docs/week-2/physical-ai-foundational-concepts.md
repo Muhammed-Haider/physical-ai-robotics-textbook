@@ -125,6 +125,108 @@ To control a robot, we need to understand its motion.
 
 **Design Task**: Modify `sensor_decision.py`. Imagine your robot has two "motors" (actuators) that can move it forward (by setting speed > 0) or turn (by setting different speeds for left/right motors). Can you make your simulated robot avoid an obstacle by turning, rather than just stopping?
 
+### Exercise 2: Reactive Actuation Based on Sensor Data :::info FR-003: Motivational Immersion
+:::
+
+**Challenge Level**: Intermediate
+
+**Objective**: Modify the `sensor_decision.py` script to make the simulated robot react to detected obstacles by turning, demonstrating a basic sense-act loop.
+
+**Tools**: Python. :::info FR-007: Technology Critique - Python's readability makes it ideal for illustrating sensor-actuator logic without complex overhead.
+:::
+
+**Steps**:
+1.  **Copy `sensor_decision.py`**: Duplicate `sensor_decision.py` and name the new file `exercise2_reactive_actuation.py`.
+2.  **Modify `main()` function**: Open `exercise2_reactive_actuation.py` and replace the `main()` function with the following. This version will simulate movement (linear and angular velocity) based on sensor input.
+    ```python
+    def main():
+        print("Starting reactive obstacle avoidance simulation...")
+        linear_velocity = 0.1 # m/s
+        angular_velocity = 0.0 # rad/s
+
+        for _ in range(20): # Simulate 20 readings/time steps
+            distance = read_ultrasonic_sensor()
+            print(f"Distance detected: {distance} cm")
+
+            if distance < 30: # Obstacle very close, turn sharply
+                print("OBSTACLE DETECTED! Turning right.")
+                linear_velocity = 0.0
+                angular_velocity = -0.5 # Turn right
+            elif distance < 70: # Obstacle near, turn gently
+                print("Obstacle near. Turning slightly left.")
+                linear_velocity = 0.05
+                angular_velocity = 0.2 # Turn left
+            else: # Path clear, move forward
+                print("Path clear. Moving forward.")
+                linear_velocity = 0.1
+                angular_velocity = 0.0
+            
+            # Simulate robot movement based on calculated velocities (conceptual)
+            print(f"Robot command: Linear={linear_velocity:.2f} m/s, Angular={angular_velocity:.2f} rad/s")
+            time.sleep(0.5) # Wait for 0.5 second before next reading
+        print("Reactive simulation ended.")
+
+    if __name__ == "__main__":
+        main()
+    ```
+3.  **Run the script**:
+    ```bash
+    python exercise2_reactive_actuation.py
+    ```
+
+**Expected Output**: The script will print simulated distance readings. For each reading, it will also print a decision (e.g., "OBSTACLE DETECTED! Turning right.") and conceptual robot movement commands (linear and angular velocities) showing how the robot would react.
+
+### Exercise 3: Simple Sensor Fusion / State Inference :::info FR-003: Motivational Immersion
+:::
+
+**Challenge Level**: Intermediate
+
+**Objective**: Combine readings from two simulated "ultrasonic" sensors to infer a more robust obstacle presence and direction.
+
+**Tools**: Python. :::info FR-007: Technology Critique - This exercise highlights how combining simple sensors can lead to richer environmental understanding, a foundation for sensor fusion.
+:::
+
+**Steps**:
+1.  **Create a new script**: Create a new Python file named `exercise3_sensor_fusion.py`.
+2.  **Define sensor functions**: Add the `read_ultrasonic_sensor()` function from `sensor_decision.py`. Then, add a second function `read_left_ultrasonic_sensor()` which also returns a random distance, but simulates a sensor on the left side.
+    ```python
+    import random
+    import time
+
+    def read_front_ultrasonic_sensor():
+        return random.randint(20, 150) # Simulate front sensor
+
+    def read_left_ultrasonic_sensor():
+        return random.randint(20, 200) # Simulate left sensor
+
+    def main():
+        print("Starting simple sensor fusion simulation...")
+        for _ in range(10):
+            front_distance = read_front_ultrasonic_sensor()
+            left_distance = read_left_ultrasonic_sensor()
+            print(f"Front Distance: {front_distance} cm, Left Distance: {left_distance} cm")
+
+            if front_distance < 40 and left_distance < 40:
+                print("Obstacle directly ahead and to the left! Critical avoidance needed.")
+            elif front_distance < 50:
+                print("Obstacle directly ahead. Proceed with caution.")
+            elif left_distance < 60:
+                print("Obstacle on the left side. Adjust path to the right.")
+            else:
+                print("Path appears clear.")
+            time.sleep(1)
+        print("Sensor fusion simulation ended.")
+
+    if __name__ == "__main__":
+        main()
+    ```
+3.  **Run the script**:
+    ```bash
+    python exercise3_sensor_fusion.py
+    ```
+
+**Expected Output**: The script will print simulated front and left sensor readings. Based on these combined readings, it will infer and print a more detailed state about obstacles, demonstrating how multiple sensor inputs lead to better decision-making.
+
 ## Real-World Application: Prosthetics and Exoskeletons :::info FR-006: Contextual Humanity
 :::
 

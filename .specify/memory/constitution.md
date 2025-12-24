@@ -234,19 +234,19 @@ If stuck: consult AI agents → make decision → ship.
 - [ ] Prepare AI agent prompts
 
 ### Phase 2: Content Sprint (8-10 hours)
-- [ ] Week 1: Physical AI Foundations (2 chapters)
-- [ ] Week 2: Physical AI Foundations cont. (2 chapters)
-- [ ] Week 3: ROS 2 Basics (2 chapters)
-- [ ] Week 4: ROS 2 Intermediate (2 chapters)
-- [ ] Week 5: ROS 2 Advanced (2 chapters)
-- [ ] Week 6: Gazebo Simulation (2 chapters)
-- [ ] Week 7: Unity Integration (2 chapters)
-- [ ] Week 8: Isaac Sim Basics (2 chapters)
-- [ ] Week 9: Isaac ROS (2 chapters)
-- [ ] Week 10: Isaac Advanced (2 chapters)
-- [ ] Week 11: Humanoid Design (2 chapters)
-- [ ] Week 12: Humanoid Control (2 chapters)
-- [ ] Week 13: Conversational Robotics (2 chapters)
+- [ ] Week 1: Physical AI Foundations (1 chapter)
+- [ ] Week 2: Physical AI Foundations cont. (1 chapter)
+- [ ] Week 3: ROS 2 Basics (1 chapter)
+- [ ] Week 4: ROS 2 Intermediate (1 chapter)
+- [ ] Week 5: ROS 2 Advanced (1 chapter)
+- [ ] Week 6: Gazebo Simulation (1 chapter)
+- [ ] Week 7: Unity Integration (1 chapter)
+- [ ] Week 8: Isaac Sim Basics (1 chapter)
+- [ ] Week 9: Isaac ROS (1 chapter)
+- [ ] Week 10: Isaac Advanced (1 chapter)
+- [ ] Week 11: Humanoid Design (1 chapter)
+- [ ] Week 12: Humanoid Control (1 chapter)
+- [ ] Week 13: Conversational Robotics (1 chapter)
 
 **Per chapter:** Spec (10min) → Generate (30min) → Test (15min) → Deploy (5min)
 
@@ -347,6 +347,7 @@ Apply these principles as you create content:
 
 ## 🏁 VERSION HISTORY
 
+- **v2.0.2** (2025-12-24): Updated chapter count to "1 chapter" per week in Content Sprint section.
 - **v2.0.1** (2025-12-24): Corrected file paths to match project structure.
 - **v2.0** (2025-12-24): Lean constitution for rapid completion.
 - **v1.0.2** (2025-12-01): Original complex version

@@ -86,6 +86,133 @@ To work with ROS 2, you'll typically set up a "workspace" – a directory where 
 
 **Expected Output**: The `colcon build` command should complete successfully without errors. After sourcing, you should be able to run `ros2 pkg list | grep my_first_package` and see your package listed.
 
+### Exercise 2: Creating a ROS 2 Publisher Node
+
+**Challenge Level**: Beginner
+
+**Objective**: Create a ROS 2 node that publishes a "Hello, World!" message to a topic.
+
+**Tools**: The ROS 2 workspace you created in Exercise 1.
+
+**Steps**:
+1.  **Navigate to your package directory**:
+    ```bash
+    cd ~/ros2_ws/src/my_first_package/my_first_package
+    ```
+
+2.  **Create a new Python file** named `publisher_node.py` and add the following code:
+    ```python
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+
+    class HelloWorldPublisher(Node):
+        def __init__(self):
+            super().__init__('hello_world_publisher')
+            self.publisher_ = self.create_publisher(String, 'hello_world', 10)
+            timer_period = 0.5  # seconds
+            self.timer = self.create_timer(timer_period, self.timer_callback)
+            self.i = 0
+
+        def timer_callback(self):
+            msg = String()
+            msg.data = 'Hello, World! %d' % self.i
+            self.publisher_.publish(msg)
+            self.get_logger().info('Publishing: "%s"' % msg.data)
+            self.i += 1
+
+    def main(args=None):
+        rclpy.init(args=args)
+        hello_world_publisher = HelloWorldPublisher()
+        rclpy.spin(hello_world_publisher)
+        hello_world_publisher.destroy_node()
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+
+3.  **Update `setup.py`**: Open `~/ros2_ws/src/my_first_package/setup.py` and add the following to the `entry_points` dictionary within `console_scripts`:
+    ```python
+    'hello_world_pub = my_first_package.publisher_node:main',
+    ```
+
+4.  **Build and run**:
+    ```bash
+    cd ~/ros2_ws
+    colcon build
+    . install/setup.bash
+    ros2 run my_first_package hello_world_pub
+    ```
+
+**Expected Output**: You should see the "Publishing: 'Hello, World! ...'" message printed to the console repeatedly.
+
+### Exercise 3: Creating a ROS 2 Subscriber Node
+
+**Challenge Level**: Beginner
+
+**Objective**: Create a ROS 2 node that subscribes to the "Hello, World!" topic and prints the messages.
+
+**Tools**: The ROS 2 workspace and publisher node from the previous exercises.
+
+**Steps**:
+1.  **Navigate to your package directory**:
+    ```bash
+    cd ~/ros2_ws/src/my_first_package/my_first_package
+    ```
+
+2.  **Create a new Python file** named `subscriber_node.py` and add the following code:
+    ```python
+    import rclpy
+    from rclpy.node import Node
+    from std_msgs.msg import String
+
+    class HelloWorldSubscriber(Node):
+        def __init__(self):
+            super().__init__('hello_world_subscriber')
+            self.subscription = self.create_subscription(
+                String,
+                'hello_world',
+                self.listener_callback,
+                10)
+            self.subscription  # prevent unused variable warning
+
+        def listener_callback(self, msg):
+            self.get_logger().info('I heard: "%s"' % msg.data)
+
+    def main(args=None):
+        rclpy.init(args=args)
+        hello_world_subscriber = HelloWorldSubscriber()
+        rclpy.spin(hello_world_subscriber)
+        hello_world_subscriber.destroy_node()
+        rclpy.shutdown()
+
+    if __name__ == '__main__':
+        main()
+    ```
+
+3.  **Update `setup.py`**: Open `~/ros2_ws/src/my_first_package/setup.py` and add the following to the `entry_points` dictionary, next to your publisher:
+    ```python
+    'hello_world_sub = my_first_package.subscriber_node:main',
+    ```
+
+4.  **Build and run**:
+    ```bash
+    cd ~/ros2_ws
+    colcon build
+    . install/setup.bash
+    ```
+    In one terminal, run the publisher:
+    ```bash
+    ros2 run my_first_package hello_world_pub
+    ```
+    In a second terminal, run the subscriber:
+    ```bash
+    ros2 run my_first_package hello_world_sub
+    ```
+
+**Expected Output**: In the subscriber terminal, you should see the "I heard: 'Hello, World! ...'" message printed to the console, corresponding to the messages from the publisher.
+
 ## Creative Challenge: Exploring ROS 2 Commands (FR-004: Creative Synthesis)
 
 **Design Task**: Without looking up the answers, use ROS 2 command-line tools (e.g., `ros2 help`, `ros2 topic list`, `ros2 node list`) to discover what other default nodes and topics might be running on a fresh ROS 2 installation. How would you determine the data type of a message published on a topic?

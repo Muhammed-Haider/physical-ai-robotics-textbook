@@ -150,6 +150,87 @@ While Gazebo is powerful, Unity (a popular game development engine) offers unpar
 
 **Expected Output**: Gazebo will launch, and your custom robot model with a simulated LiDAR sensor will appear. You should be able to visualize the LiDAR scans in RViz2 by subscribing to the `/my_robot/scan` topic.
 
+### Exercise 2: Adding a Camera Sensor to the Robot
+
+**Challenge Level**: Intermediate
+
+**Objective**: Add a simulated camera to your robot's URDF and visualize the image feed in ROS 2.
+
+**Tools**: The URDF and launch file from Exercise 1.
+
+**Steps**:
+1.  **Modify your `my_robot.urdf` file** to include a camera sensor. Add a new link for the camera and a Gazebo sensor plugin.
+    ```xml
+    <!-- Add this inside your <robot> tag -->
+    <link name="camera_link">
+      <visual>
+        <geometry>
+          <box size="0.05 0.05 0.05"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="base_to_camera" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera_link"/>
+      <origin xyz="0.1 0 0.05" rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="camera_link">
+      <sensor name="camera_sensor" type="camera">
+        <update_rate>30.0</update_rate>
+        <camera name="head">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>800</width>
+            <height>800</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/my_robot</namespace>
+            <remapping>image_raw:=image_raw</remapping>
+            <remapping>camera_info:=camera_info</remapping>
+          </ros>
+          <camera_name>camera1</camera_name>
+          <frame_name>camera_link</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+    ```
+2.  **Relaunch your simulation**: `ros2 launch my_robot_description my_robot_launch.py`
+3.  **Visualize the camera feed**: Use `rviz2` or `rqt_image_view` to visualize the images published on the `/my_robot/image_raw` topic.
+
+**Expected Output**: You will see a new link for the camera on your robot model in Gazebo, and you will be able to view the simulated camera feed in a ROS 2 visualizer.
+
+### Exercise 3: Controlling the Robot with Teleop
+
+**Challenge Level**: Intermediate
+
+**Objective**: Control your simulated robot's movement using a keyboard teleop node.
+
+**Tools**: A robot model with differential drive, Gazebo, ROS 2.
+
+**Steps**:
+1.  **Install the teleop package**:
+    ```bash
+    sudo apt-get install ros-humble-teleop-twist-keyboard
+    ```
+2.  **Ensure your robot has a differential drive plugin** in its URDF/SDF.
+3.  **Launch your robot simulation**.
+4.  **In a new terminal, run the teleop node**:
+    ```bash
+    ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/my_robot/cmd_vel
+    ```
+    (You may need to remap the `/cmd_vel` topic to what your robot's controller expects).
+
+**Expected Output**: You will be able to drive your robot around in the Gazebo simulation using the keyboard keys.
+
 ## Creative Challenge: Unity High-Fidelity Simulation (FR-004: Creative Synthesis)
 
 **Design Task**: Research and briefly outline the steps you would take to import your URDF robot model from Gazebo into a Unity project. What advantages would Unity offer for a specific simulation scenario (e.g., detailed human-robot interaction visualization, advanced lighting/textures)?
