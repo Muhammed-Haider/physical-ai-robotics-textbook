@@ -33,6 +33,18 @@
 - [X] T026 [P] Implement Admin API endpoint `GET /admin/logs` in `backend/src/api/admin.py`
 - [X] T027 [P] Implement Admin API endpoint `POST /admin/rag/config` in `backend/src/api/admin.py`
 
+## Phase 2.5: Testing Foundational Components
+
+- [ ] T052 Implement unit tests for all Pydantic data models (`TextbookContent`, `TextChunk`, `User`, `UserQuery`, `ChatbotResponse`, `ChatSession`) in `backend/tests/unit/test_models.py`
+- [ ] T053 Implement unit tests for `AuthService` (mocking "Better Auth" integration) in `backend/tests/unit/test_auth_service.py`
+- [ ] T054 Implement unit tests for `QdrantService` (mocking Qdrant client interactions) in `backend/tests/unit/test_qdrant_service.py`
+- [ ] T055 Implement unit tests for `GeminiService` (mocking Gemini API calls) in `backend/tests/unit/test_gemini_service.py`
+- [ ] T056 Implement unit tests for `DocumentParser` (covering Markdown and mock PDF parsing) in `backend/tests/unit/test_document_parser.py`
+- [ ] T057 Implement unit tests for `IngestionService` (mocking dependencies like `DocumentParser`, `GeminiService`, `QdrantService`) in `backend/tests/unit/test_ingestion_service.py`
+- [ ] T058 Implement unit tests for `IndexingService` (mocking `IngestionService`) in `backend/tests/unit/test_indexing_service.py`
+- [ ] T059 Implement unit tests for `IndexingScheduler` (mocking `IndexingService` and `asyncio` operations) in `backend/tests/unit/test_indexing_scheduler.py`
+- [ ] T060 Implement API integration tests for all `/admin` endpoints (mocking external services if needed) in `backend/tests/integration/test_admin_api.py`
+
 ## Phase 3: User Story 1 - Ask Textbook-Related Question (Priority: P1)
 
 - [ ] T028 [US1] Implement RAG core logic for retrieval and LLM generation in `backend/src/services/rag_service.py`
