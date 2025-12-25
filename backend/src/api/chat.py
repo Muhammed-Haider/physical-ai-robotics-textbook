@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Literal
 from datetime import datetime
 import uuid
+from backend.src.utils.logger import logger
 
 from backend.src.services.rag_service import RAGService
 from backend.src.services.gemini_service import GeminiService
@@ -153,7 +154,7 @@ async def submit_feedback(request: FeedbackRequest):
     Submit feedback on a chatbot response.
     """
     # In a real scenario, this would store the feedback in a database.
-    # For now, we'll just print it.
-    print(f"Received feedback for response '{request.response_id}': Type='{request.feedback_type}', Comment='{request.comment}'")
+    # For now, we'll just log it.
+    logger.info(f"Received feedback for response '{request.response_id}': Type='{request.feedback_type}', Comment='{request.comment}'")
     return {"message": "Feedback accepted."}
 

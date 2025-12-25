@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
+from backend.src.utils.logger import logger
 
 from backend.src.services.indexing_service import IndexingService
 
@@ -20,15 +21,17 @@ class IndexingScheduler:
             {"file_path": "/path/to/your/textbook/chapter1.md", "metadata": {"chapter": "1", "week": "week-01"}},
             {"file_path": "/path/to/your/textbook/chapter2.pdf", "metadata": {"chapter": "2", "week": "week-01"}},
         ]
+        logger.info(f"IndexingScheduler initialized with interval: {self.reindex_interval}.")
+
 
     async def _run_scheduler(self):
         """
         Internal method to continuously run the re-indexing task.
         """
         while self._running:
-            print(f"[{datetime.now()}] Running periodic re-indexing...")
+            logger.info(f"Running periodic re-indexing at {datetime.now()}.")
             await self.indexing_service.reindex_all_sources(self.configured_sources)
-            print(f"[{datetime.now()}] Periodic re-indexing complete. Next run in {self.reindex_interval}.")
+            logger.info(f"Periodic re-indexing complete. Next run in {self.reindex_interval}.")
             await asyncio.sleep(self.reindex_interval.total_seconds())
 
     async def start_scheduler(self):
@@ -36,30 +39,35 @@ class IndexingScheduler:
         Starts the periodic re-indexing scheduler.
         """
         if self._running:
-            print("Indexing scheduler is already running.")
+            logger.warning("Indexing scheduler is already running.")
             return
 
-        print("Starting indexing scheduler...")
+        logger.info("Starting indexing scheduler...")
         self._running = True
         self._task = asyncio.create_task(self._run_scheduler())
+        logger.info("Indexing scheduler started.")
+
 
     async def stop_scheduler(self):
         """
         Stops the periodic re-indexing scheduler.
         """
         if not self._running:
-            print("Indexing scheduler is not running.")
+            logger.warning("Indexing scheduler is not running.")
             return
 
-        print("Stopping indexing scheduler...")
+        logger.info("Stopping indexing scheduler...")
         self._running = False
         if self._task:
             self._task.cancel()
             try:
                 await self._task
             except asyncio.CancelledError:
-                pass
-        print("Indexing scheduler stopped.")
+                logger.info("Indexing scheduler task cancelled.")
+            except Exception as e:
+                logger.error(f"Error while stopping scheduler task: {e}")
+        logger.info("Indexing scheduler stopped.")
+
 
     async def update_configured_sources(self, new_sources: List[Dict[str, Any]]):
         """
@@ -67,4 +75,4 @@ class IndexingScheduler:
         This would typically be called by an admin endpoint or configuration change.
         """
         self.configured_sources = new_sources
-        print("Configured sources updated for scheduler.")
+        logger.info("Configured sources updated for scheduler.")
