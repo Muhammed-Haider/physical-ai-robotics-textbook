@@ -11,27 +11,27 @@
 
 ## Phase 2: Foundational (Blocking Prerequisites for all User Stories)
 
-- [ ] T007 Implement basic user authentication integration with Better Auth in `backend/src/services/auth_service.py`
-- [ ] T008 [P] Define `Textbook Content` data model in `backend/src/models/textbook_content.py`
-- [ ] T009 [P] Define `Text Chunk` data model in `backend/src/models/text_chunk.py`
-- [ ] T010 [P] Define `User` data model in `backend/src/models/user.py`
-- [ ] T011 [P] Define `User Query` data model in `backend/src/models/user_query.py`
-- [ ] T012 [P] Define `Chatbot Response` data model in `backend/src/models/chatbot_response.py`
-- [ ] T013 [P] Define `Chat Session` data model and state transitions in `backend/src/models/chat_session.py`
-- [ ] T014 Implement Qdrant Cloud client and connection in `backend/src/services/qdrant_service.py`
-- [ ] T015 Implement Gemini API client and connection for embeddings and LLM in `backend/src/services/gemini_service.py`
-- [ ] T016 Implement documentation parsing service (Markdown, PDF) in `backend/src/services/document_parser.py`
-- [ ] T017 Implement documentation ingestion service logic in `backend/src/services/ingestion_service.py`
-- [ ] T018 Implement re-indexing mechanism (manual trigger) in `backend/src/services/indexing_service.py`
-- [ ] T019 Implement re-indexing mechanism (periodic schedule) in `backend/src/services/indexing_scheduler.py`
-- [ ] T020 [P] Implement Admin API endpoint `POST /admin/ingest` in `backend/src/api/admin.py`
-- [ ] T021 [P] Implement Admin API endpoint `GET /admin/sources` in `backend/src/api/admin.py`
-- [ ] T022 [P] Implement Admin API endpoint `POST /admin/sources` in `backend/src/api/admin.py`
-- [ ] T023 [P] Implement Admin API endpoint `PUT /admin/sources/{source_id}` in `backend/src/api/admin.py`
-- [ ] T024 [P] Implement Admin API endpoint `DELETE /admin/sources/{source_id}` in `backend/src/api/admin.py`
-- [ ] T025 [P] Implement Admin API endpoint `POST /admin/reindex` in `backend/src/api/admin.py`
-- [ ] T026 [P] Implement Admin API endpoint `GET /admin/logs` in `backend/src/api/admin.py`
-- [ ] T027 [P] Implement Admin API endpoint `POST /admin/rag/config` in `backend/src/api/admin.py`
+- [X] T007 Implement basic user authentication integration with Better Auth in `backend/src/services/auth_service.py`
+- [X] T008 [P] Define `Textbook Content` data model in `backend/src/models/textbook_content.py`
+- [X] T009 [P] Define `Text Chunk` data model in `backend/src/models/text_chunk.py`
+- [X] T010 [P] Define `User` data model in `backend/src/models/user.py`
+- [X] T011 [P] Define `User Query` data model in `backend/src/models/user_query.py`
+- [X] T012 [P] Define `Chatbot Response` data model in `backend/src/models/chatbot_response.py`
+- [X] T013 [P] Define `Chat Session` data model and state transitions in `backend/src/models/chat_session.py`
+- [X] T014 Implement Qdrant Cloud client and connection in `backend/src/services/qdrant_service.py`
+- [X] T015 Implement Gemini API client and connection for embeddings and LLM in `backend/src/services/gemini_service.py`
+- [X] T016 Implement documentation parsing service (Markdown, PDF) in `backend/src/services/document_parser.py`
+- [X] T017 Implement documentation ingestion service logic in `backend/src/services/ingestion_service.py`
+- [X] T018 Implement re-indexing mechanism (manual trigger) in `backend/src/services/indexing_service.py`
+- [X] T019 Implement re-indexing mechanism (periodic schedule) in `backend/src/services/indexing_scheduler.py`
+- [X] T020 [P] Implement Admin API endpoint `POST /admin/ingest` in `backend/src/api/admin.py`
+- [X] T021 [P] Implement Admin API endpoint `GET /admin/sources` in `backend/src/api/admin.py`
+- [X] T022 [P] Implement Admin API endpoint `POST /admin/sources` in `backend/src/api/admin.py`
+- [X] T023 [P] Implement Admin API endpoint `PUT /admin/sources/{source_id}` in `backend/src/api/admin.py`
+- [X] T024 [P] Implement Admin API endpoint `DELETE /admin/sources/{source_id}` in `backend/src/api/admin.py`
+- [X] T025 [P] Implement Admin API endpoint `POST /admin/reindex` in `backend/src/api/admin.py`
+- [X] T026 [P] Implement Admin API endpoint `GET /admin/logs` in `backend/src/api/admin.py`
+- [X] T027 [P] Implement Admin API endpoint `POST /admin/rag/config` in `backend/src/api/admin.py`
 
 ## Phase 3: User Story 1 - Ask Textbook-Related Question (Priority: P1)
 
