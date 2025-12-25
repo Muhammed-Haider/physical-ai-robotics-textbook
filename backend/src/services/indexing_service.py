@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Optional
 from backend.src.services.ingestion_service import IngestionService
 from backend.src.models.textbook_content import TextbookContent
+from backend.src.utils.logger import logger
 
 class IndexingService:
     """
@@ -8,12 +9,13 @@ class IndexingService:
     """
     def __init__(self, ingestion_service: IngestionService):
         self.ingestion_service = ingestion_service
+        logger.info("IndexingService initialized.")
 
     async def reindex_document(self, file_path: str, metadata: Dict[str, Any]) -> Optional[TextbookContent]:
         """
         Manually triggers re-ingestion of a single document.
         """
-        print(f"Re-indexing document: {file_path}")
+        logger.info(f"Re-indexing document: {file_path}")
         # The ingestion service handles the full parse, embed, and store logic.
         return await self.ingestion_service.ingest_document(file_path, metadata)
 
@@ -22,7 +24,7 @@ class IndexingService:
         Triggers a re-indexing process for all specified sources.
         `source_list` would typically contain dictionaries with 'file_path' and 'metadata'.
         """
-        print(f"Initiating re-indexing for {len(source_list)} sources.")
+        logger.info(f"Initiating re-indexing for {len(source_list)} sources.")
         indexed_documents: List[Optional[TextbookContent]] = []
         for source in source_list:
             file_path = source.get("file_path")
@@ -30,6 +32,6 @@ class IndexingService:
             if file_path:
                 indexed_documents.append(await self.reindex_document(file_path, metadata))
             else:
-                print(f"Warning: Skipping source due to missing 'file_path': {source}")
-        print("Re-indexing complete.")
+                logger.warning(f"Skipping source due to missing 'file_path': {source}")
+        logger.info("Re-indexing complete.")
         return indexed_documents

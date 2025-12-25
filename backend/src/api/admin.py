@@ -1,7 +1,8 @@
+from datetime import datetime
+from backend.src.utils.logger import logger
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from typing import List, Any, Literal, Optional, Dict
-from datetime import datetime
 
 from backend.src.services.auth_service import AuthService
 from backend.src.services.ingestion_service import IngestionService
@@ -24,7 +25,9 @@ async def get_current_admin_user(auth_service: AuthService = Depends(AuthService
     # In a real scenario, this would involve token verification
     authenticated_admin = {"user_id": "admin_test_id", "username": "admin_user", "role": "admin"}
     if authenticated_admin and authenticated_admin["role"] == "admin":
+        logger.info(f"Admin user authenticated: {authenticated_admin['username']}")
         return authenticated_admin
+    logger.warning("Admin authentication failed.")
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Not authenticated as admin",
@@ -151,7 +154,7 @@ async def trigger_ingestion(
         # For this endpoint, we are just triggering the ingestion process.
         # The ingestion service itself would iterate through these and process.
         # For now, we'll just print and acknowledge.
-        print(f"Admin '{admin_user['username']}' triggered ingestion for source IDs: {request.source_ids}")
+        logger.info(f"Admin '{admin_user['username']}' triggered ingestion for source IDs: {request.source_ids}")
         
         # If we were to actually trigger the full ingestion for each source:
         # for source_data in mock_sources_to_ingest:
@@ -161,6 +164,7 @@ async def trigger_ingestion(
     except HTTPException as e:
         raise e
     except Exception as e:
+        logger.error(f"Internal server error during ingestion: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal server error during ingestion: {e}"
@@ -171,6 +175,7 @@ async def list_sources(admin_user: Any = Depends(get_current_admin_user)):
     """
     List configured documentation sources.
     """
+    logger.info(f"Admin '{admin_user['username']}' requested list of sources.")
     # In a real scenario, this would fetch sources from a database.
     # For now, return a mock list of sources.
     return mock_sources
@@ -188,7 +193,7 @@ async def create_source(
     new_source_id = f"source-{len(mock_sources) + 1}"
     new_source = Source(id=new_source_id, name=request.name, type=request.type, path=request.path, status="active")
     mock_sources.append(new_source)
-    print(f"Admin '{admin_user['username']}' configured new source: {new_source.name} ({new_source.type}) at {new_source.path}")
+    logger.info(f"Admin '{admin_user['username']}' configured new source: {new_source.name} ({new_source.type}) at {new_source.path}")
     
     return {"message": "Documentation source configured successfully.", "source_id": new_source_id}
 
@@ -213,13 +218,11 @@ async def update_source(
             if request.path is not None:
                 mock_sources[i].path = request.path
             
-            print(f"Admin '{admin_user['username']}' updated source {source_id}: {mock_sources[i]}")
+            logger.info(f"Admin '{admin_user['username']}' updated source {source_id}: {mock_sources[i]}")
             return mock_sources[i]
     
+    logger.warning(f"Admin '{admin_user['username']}' attempted to update non-existent source: {source_id}")
     raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Source with ID '{source_id}' not found."
-    )
 
 @router.delete("/admin/sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_source(
@@ -235,13 +238,11 @@ async def delete_source(
     mock_sources[:] = [source for source in mock_sources if source.id != source_id]
     
     if len(mock_sources) < initial_len:
-        print(f"Admin '{admin_user['username']}' deleted source {source_id}")
+        logger.info(f"Admin '{admin_user['username']}' deleted source {source_id}")
         return # 204 No Content
     else:
+        logger.warning(f"Admin '{admin_user['username']}' attempted to delete non-existent source: {source_id}")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Source with ID '{source_id}' not found."
-        )
 
 @router.post("/admin/reindex", status_code=status.HTTP_202_ACCEPTED)
 async def trigger_reindex(
@@ -251,7 +252,7 @@ async def trigger_reindex(
     """
     Manually trigger re-indexing of all active documentation sources.
     """
-    print(f"Admin '{admin_user['username']}' triggered full re-indexing.")
+    logger.info(f"Admin '{admin_user['username']}' triggered full re-indexing.")
     # In a real scenario, fetch actual sources from DB to pass to reindex_all_sources
     # For now, use the mock_sources list for demonstration
     sources_for_reindex = [{"file_path": s.path, "metadata": {"id": s.id, "name": s.name, "type": s.type}} for s in mock_sources if s.status == "active"]
@@ -267,7 +268,7 @@ async def get_logs(
     """
     Retrieve system logs for the RAG service.
     """
-    print(f"Admin '{admin_user['username']}' requested logs with level {level} and limit {limit}.")
+    logger.info(f"Admin '{admin_user['username']}' requested logs with level {level} and limit {limit}.")
     
     filtered_logs = [log for log in mock_logs if _log_level_filter(log.level, level)]
     
@@ -301,9 +302,10 @@ async def update_rag_config(
         updated_fields.append("llm_temperature")
     
     if updated_fields:
-        print(f"Admin '{admin_user['username']}' updated RAG config fields: {', '.join(updated_fields)}. New config: {mock_rag_config}")
+        logger.info(f"Admin '{admin_user['username']}' updated RAG config fields: {', '.join(updated_fields)}. New config: {mock_rag_config}")
         return {"message": "RAG configuration updated successfully.", "updated_fields": updated_fields, "new_config": mock_rag_config}
     else:
+        logger.info(f"Admin '{admin_user['username']}' provided no RAG configuration fields for update.")
         return {"message": "No RAG configuration fields provided for update."}
 
 def _log_level_filter(log_level: str, filter_level: str) -> bool:

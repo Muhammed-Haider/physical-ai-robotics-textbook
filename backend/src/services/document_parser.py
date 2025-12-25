@@ -2,6 +2,7 @@ import os
 import markdown
 # from PyPDF2 import PdfReader # Uncomment and install PyPDF2 for PDF parsing
 from typing import Dict, Any, Optional
+from backend.src.utils.logger import logger
 
 class DocumentParser:
     """
@@ -12,13 +13,14 @@ class DocumentParser:
         Parses a document based on its file extension and returns its text content.
         """
         file_extension = os.path.splitext(file_path)[1].lower()
+        logger.info(f"Attempting to parse document: {file_path} with extension {file_extension}")
 
         if file_extension == ".md":
             return await self._parse_markdown(file_path)
         elif file_extension == ".pdf":
             return await self._parse_pdf(file_path)
         else:
-            print(f"Warning: Unsupported file type for parsing: {file_extension}")
+            logger.warning(f"Unsupported file type for parsing: {file_extension}. File: {file_path}")
             return None
 
     async def _parse_markdown(self, file_path: str) -> Optional[str]:
@@ -32,12 +34,13 @@ class DocumentParser:
                 # A more robust solution might use a dedicated markdown-to-text converter
                 plain_text = ''.join(markdown.markdown(md_content, output_format='html')
                                      .splitlines())
+                logger.info(f"Successfully parsed Markdown file: {file_path}")
                 return plain_text
         except FileNotFoundError:
-            print(f"Error: Markdown file not found at {file_path}")
+            logger.error(f"Markdown file not found at {file_path}")
             return None
         except Exception as e:
-            print(f"Error parsing Markdown file {file_path}: {e}")
+            logger.error(f"Error parsing Markdown file {file_path}: {e}")
             return None
 
     async def _parse_pdf(self, file_path: str) -> Optional[str]:
@@ -50,14 +53,15 @@ class DocumentParser:
         #     text = ""
         #     for page in reader.pages:
         #         text += page.extract_text() or ""
+        #     logger.info(f"Successfully parsed PDF file: {file_path}")
         #     return text
         # except FileNotFoundError:
-        #     print(f"Error: PDF file not found at {file_path}")
+        #     logger.error(f"PDF file not found at {file_path}")
         #     return None
         # except Exception as e:
-        #     print(f"Error parsing PDF file {file_path}: {e}")
+        #     logger.error(f"Error parsing PDF file {file_path}: {e}")
         #     return None
-        print(f"PDF parsing not fully implemented. Please install PyPDF2 to enable. File: {file_path}")
+        logger.warning(f"PDF parsing not fully implemented. Please install PyPDF2 to enable. File: {file_path}")
         return None
 
     async def _chunk_text(self, text: str) -> List[str]:
