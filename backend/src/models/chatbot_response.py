@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
+from backend.src.models.source_document import SourceDocument # Import SourceDocument
+
 class ChatbotResponse(BaseModel):
     """
     The generated natural language answer from the LLM based on retrieved text chunks.
@@ -13,6 +15,10 @@ class ChatbotResponse(BaseModel):
     retrieved_chunks_refs: Optional[List[str]] = Field(
         None,
         description="List of references to Text Chunks used for generation (foreign keys to Text Chunk.id)."
+    )
+    sources: Optional[List[SourceDocument]] = Field( # New field for source documents
+        None,
+        description="List of source documents linked to this response."
     )
     confidence_score: Optional[float] = Field(
         None,
@@ -31,6 +37,14 @@ class ChatbotResponse(BaseModel):
                 "retrieved_chunks_refs": [
                     "intro-to-ros2-ch1-sec1-chunk-0",
                     "intro-to-ros2-ch1-sec2-chunk-1"
+                ],
+                "sources": [ # Example for new field
+                    {
+                        "document_id": "textbook-ch1-sec1",
+                        "title": "Introduction to ROS 2",
+                        "excerpt": "ROS 2 (Robot Operating System 2) is a set of software libraries...",
+                        "url": "https://example.com/docs/ros2-intro"
+                    }
                 ],
                 "confidence_score": 0.85
             }
