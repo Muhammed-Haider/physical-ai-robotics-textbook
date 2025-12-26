@@ -1,9 +1,9 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
-from backend.src.utils.logger import logger
+from src.utils.logger import logger
 
-from backend.src.services.indexing_service import IndexingService
+from src.services.indexing_service import IndexingService
 
 class IndexingScheduler:
     """

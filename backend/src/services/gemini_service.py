@@ -1,7 +1,7 @@
 import os
 import google.generativeai as genai
 from typing import List, Optional
-from backend.src.utils.logger import logger
+from src.utils.logger import logger
 
 class GeminiService:
     """

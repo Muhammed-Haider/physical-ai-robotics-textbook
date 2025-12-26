@@ -6,8 +6,8 @@ from typing import List, Dict, Any
 
 # Import the main FastAPI app and the admin router
 from main import app as fastapi_app
-from backend.src.api.admin import router as admin_router
-from backend.src.api.admin import mock_sources, mock_rag_config # Access mock data
+from src.api.admin import router as admin_router
+from src.api.admin import mock_sources, mock_rag_config # Access mock data
 
 # Fixture for the TestClient
 @pytest.fixture(scope="module")
@@ -19,12 +19,12 @@ def client():
     test_app.include_router(admin_router, prefix="/api/v1")
 
     # Override dependencies for testing
-    with patch("backend.src.api.admin.AuthService", autospec=True) as MockAuthService, \
-         patch("backend.src.api.admin.IngestionService", autospec=True) as MockIngestionService, \
-         patch("backend.src.api.admin.IndexingService", autospec=True) as MockIndexingService, \
-         patch("backend.src.api.admin.DocumentParser", autospec=True) as MockDocumentParser, \
-         patch("backend.src.api.admin.GeminiService", autospec=True) as MockGeminiService, \
-         patch("backend.src.api.admin.QdrantService", autospec=True) as MockQdrantService:
+    with patch("src.api.admin.AuthService", autospec=True) as MockAuthService, \
+         patch("src.api.admin.IngestionService", autospec=True) as MockIngestionService, \
+         patch("src.api.admin.IndexingService", autospec=True) as MockIndexingService, \
+         patch("src.api.admin.DocumentParser", autospec=True) as MockDocumentParser, \
+         patch("src.api.admin.GeminiService", autospec=True) as MockGeminiService, \
+         patch("src.api.admin.QdrantService", autospec=True) as MockQdrantService:
         
         # Configure the mock AuthService to always authenticate as admin for testing
         mock_auth_instance = MockAuthService.return_value
