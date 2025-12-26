@@ -1,5 +1,5 @@
 from typing import Optional
-from backend.src.utils.logger import logger
+from src.utils.logger import logger
 
 class AuthService:
     """

@@ -1,3 +1,0 @@
-**Suggested:** No other formats required now. - *Prioritizing essential formats simplifies the initial implementation and reduces complexity.*
-
-Format: Short answer (<=5 words). You can accept the suggestion by saying "yes" or "recommended", or provide your own short answer.

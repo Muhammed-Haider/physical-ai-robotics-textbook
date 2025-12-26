@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 import uuid
-from backend.src.utils.logger import logger
+from src.utils.logger import logger
 
-from backend.src.models.textbook_content import TextbookContent
-from backend.src.models.text_chunk import TextChunk
-from backend.src.services.document_parser import DocumentParser
-from backend.src.services.gemini_service import GeminiService
-from backend.src.services.qdrant_service import QdrantService
+from src.models.textbook_content import TextbookContent
+from src.models.text_chunk import TextChunk
+from src.services.document_parser import DocumentParser
+from src.services.gemini_service import GeminiService
+from src.services.qdrant_service import QdrantService
 from qdrant_client.models import Distance # Needed for Qdrant collection creation
 
 class IngestionService:

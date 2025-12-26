@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Optional
-from backend.src.services.ingestion_service import IngestionService
-from backend.src.models.textbook_content import TextbookContent
-from backend.src.utils.logger import logger
+from src.services.ingestion_service import IngestionService
+from src.models.textbook_content import TextbookContent
+from src.utils.logger import logger
 
 class IndexingService:
     """

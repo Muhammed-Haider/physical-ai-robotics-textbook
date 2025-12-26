@@ -2,13 +2,13 @@ from typing import List, Optional
 from datetime import datetime
 import uuid
 
-from backend.src.services.gemini_service import GeminiService
-from backend.src.services.qdrant_service import QdrantService
-from backend.src.models.chatbot_response import ChatbotResponse
-from backend.src.models.user_query import UserQuery
-from backend.src.models.text_chunk import TextChunk # For payload structure from Qdrant
-from backend.src.models.textbook_content import TextbookContent # Import for mock data
-from backend.src.models.source_document import SourceDocument # Import SourceDocument
+from src.services.gemini_service import GeminiService
+from src.services.qdrant_service import QdrantService
+from src.models.chatbot_response import ChatbotResponse
+from src.models.user_query import UserQuery
+from src.models.text_chunk import TextChunk # For payload structure from Qdrant
+from src.models.textbook_content import TextbookContent # Import for mock data
+from src.models.source_document import SourceDocument # Import SourceDocument
 
 class RAGService:
     """
